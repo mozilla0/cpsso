@@ -1,0 +1,62 @@
+﻿@model IEnumerable<PrivateLabelLite.Models.Config>
+
+@{
+    ViewBag.Title = "Configuration";
+}
+
+<h4>Configuration Settings</h4>
+
+@*<p class="pull-right">
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+<div class="table-responsive" id="config">
+    <table class="table table-hover">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Key)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Key)
+                </td>
+                <td style="white-space:inherit">
+                    @{
+                        var len = (item.Value ?? "").Length;
+                        var orgLen = len;
+                        len  = len >= 100 ? 70 : len;
+                        item.Value = (item.Value.Substring(0, len) + (orgLen >= 100 ? "..." : ""));
+                    }
+                    @if ((item.Key == "client_secret") || (item.Key == "client_id"))
+                    {
+                        item.Value = "**********";
+                        @(item.Value)
+                    }
+                    else
+                    {
+                    @(item.Value)
+                    }
+                   
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) @*|
+                        @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                </td>
+            </tr>
+        }
+    </table>
+</div>

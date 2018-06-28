@@ -1,0 +1,145 @@
+﻿@model PrivateLabelLite.Models.OrderDetailModel
+@using PrivateLabelLite.Entities.Common;
+@using PrivateLabelLite.Helper;
+@{
+    ViewBag.Title = "OrderDetail";
+    bool isReseller = false;
+    if (!String.IsNullOrEmpty(User.Identity.Email()) && ConfigKeys.AllowedResellers.ToLower().Contains(User.Identity.Email().ToLower()))
+    {
+        isReseller = true;
+    }
+}
+
+<div class="container" id="order-detail" ng-controller="orderCtrl" ng-cloak ng-init='model = @Html.ToJson(Model); initOrderDetail(model.orderNo,"@User.Identity.Name","@User.Identity.Email()",@isReseller.ToString().ToLower());'>
+    <div class="container">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-12 no-padding">
+                    <div class="col-xs-7 no-padding"><h3 class="no-margin"><a href="/"><i class="fa fa-angle-double-left" aria-hidden="true"> &nbsp;</i></a>Order Detail</h3></div>
+                    <span class="pull-right"><a><i ng-click="refreshOrderDetail()" class="fa fa-refresh fa-2x" aria-hidden="true"></i></a></span>
+                </div><br><br>
+            </div>
+            <br />
+            <div class="row Card-detail">
+                <div class="order-title">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Order</b> : {{model.orderDetail.orderNumber}} &nbsp;
+                            <span ng-class="{'text-red':model.orderDetail.status=='Suspended','text-green':model.orderDetail.status=='Complete'}" title="{{model.orderDetail.status}}">
+                                <i class="fa fa-2x"
+                                   ng-class="{'fa-times-circle': model.orderDetail.status=='Suspended',
+                                              'fa-check-circle': model.orderDetail.status=='Complete',
+                                              'fa-spinner fa-spin no-padding': model.orderDetail.status=='Processing',
+                                              'fa-clock-o': model.orderDetail.status=='Open'
+                                             }">
+                                </i>
+                            </span>
+                        </div>
+
+
+                        @if (isReseller)
+                        {
+                            <div class="col-md-4">
+                                <b>Company</b> : {{ model.orderDetail.company.companyName}}
+                            </div>
+                        }
+
+                        <div class="col-md-4">
+                            <b>Domain</b> : {{ model.orderDetail.lines[0].additionalData.domain}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12" ng-repeat="orderLine in model.orderDetail.lines">
+                    <div class="col-md-4">
+                        <h4>{{orderLine.skuName}}</h4>
+                        <h4 style="display:inline-block"> SKU : {{orderLine.sku}}</h4>
+                        <h5>
+                            Status : <span class="capitalize" ng-class="{'text-red':orderLine.lineStatus=='cancelled','text-green':(orderLine.lineStatus=='completed' || orderLine.lineStatus=='active') }" title="{{orderLine.lineStatus}}">
+                                <i class="fa" ng-class="{'fa-times-circle':orderLine.lineStatus=='cancelled','fa-check-circle':(orderLine.lineStatus=='completed' || orderLine.lineStatus=='active'),
+                                    'fa-times-circle':orderLine.lineStatus =='inactive',
+                                   'fa-hourglass-half':orderLine.lineStatus =='pending',
+                                   'fa-spinner fa-spin no-padding':orderLine.lineStatus =='processing' }"> </i>
+                            </span>
+                        </h5>
+                        <br>
+                        <br>
+                        <b>Quantity :</b> &nbsp;
+                        <span class="counter">
+                            <button class="btn btn-xs btn-counter" ng-disabled="refreshingOrderDetail" ng-click="updateOrderQuantity(orderLine,-1)"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                            <span class="counter-no">{{orderLine.quantity}}</span>
+                            <button class="btn btn-xs btn-counter pull-right" ng-disabled="refreshingOrderDetail" ng-click="updateOrderQuantity(orderLine,1)"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                        </span>&nbsp;
+                        <button class="btn btn-sm bg-theme-color" ng-disabled="refreshingOrderDetail" ng-click="confirmOrderQuantityUpdate(orderLine)">Save</button>
+                    </div>
+                    <div class="col-lg-8 no-padding">
+                        <div class="col-lg-5 no-padding addOn" ng-repeat="addOn in orderLine.addOns">
+                            <h5 class="addOn-title"> <span ng-bind="addOn.skuName"></span></h5><br>
+                            <div class="col-lg-12">SKU: <span ng-bind="addOn.sku"></span></div><br>
+                            <div class="col-lg-12 capitalize">
+                                Status : <span title="{{addOn.addOnStatus}}" ng-class="{'text-green':addOn.addOnStatus=='active'}">
+                                    <i class="fa" ng-class="{'fa-times-circle':addOn.addOnStatus=='inactive','fa-check-circle':addOn.addOnStatus=='active',
+                                                'fa-hourglass-half':addOn.addOnStatus =='pending','fa-spinner fa-spin no-padding':addOn.addOnStatus =='processing'}
+                                                "></i>
+                                </span>
+                            </div><br><br>
+                            <div class="col-lg-12">
+                                <b>Quantity :</b> &nbsp; <span ng-if="addOn.addOnStatus =='inactive'" class="">{{addOn.quantity}}</span>
+                                <span ng-if="addOn.addOnStatus !='inactive'" class="counter">
+                                    <button class="btn btn-xs btn-counter" ng-disabled="refreshingOrderDetail" ng-click="updateAddOnQuantity(addOn,-1)"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                                    <span class="counter-no">{{addOn.quantity}}</span>
+                                    <button class="btn btn-xs btn-counter pull-right" ng-disabled="refreshingOrderDetail" ng-click="updateAddOnQuantity(addOn,1)"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                </span>&nbsp;
+                                <button ng-if="addOn.addOnStatus !='inactive'" class="btn btn-sm bg-theme-color" ng-disabled="refreshingOrderDetail" ng-click="confirmOrderQuantityUpdate(orderLine,addOn)">Save</button>
+                                <br><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmationPopup" tabindex="-1" role="dialog" aria-labelledby="confirmationPopup">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-border-0">
+                <div class="modal-header theme-modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">{{popupTitle}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-11">
+                        {{message}}
+                    </div>
+                </div>
+                <div class="modal-footer margin-top30">
+                    <div ng-show="!isSuccess">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn bg-theme-color" ng-click="saveOrderQuantity(model.orderDetail)">Save</button>
+                    </div>
+                    <button ng-show="isSuccess" type="submit" class="btn bg-theme-color" data-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmationAddOnPopup" tabindex="-1" role="dialog" aria-labelledby="confirmationAddOnPopup">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-border-0">
+                <div class="modal-header theme-modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modify AddOn Quantity</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-11">
+                        {{message}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div ng-show="!isSuccess">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn bg-theme-color" ng-click="saveAddOnQuantity(model.orderDetail)">Save</button>
+                    </div>
+                    <button ng-show="isSuccess" type="submit" class="btn btn-primary" data-dismiss="modal">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
