@@ -1,4 +1,4 @@
-SLEEP 30
+SLEEP 45
 SQLCMD -S %APPSETTING_key1% -d pwadb -U %APPSETTING_key2% -P %APPSETTING_key3% -i "D:\home\site\wwwroot\DBScripts\Database_Schema.sql" -o "D:\home\LogFiles\kudu\deployment\DB_Schema_OutputLog.txt" -b
 
 IF %ERRORLEVEL% == 1 (
