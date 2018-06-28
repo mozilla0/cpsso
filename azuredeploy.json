@@ -97,13 +97,6 @@
       },
 	  "minLength": 1
     },
-	//"storageURL": {
-    //  "type": "string",
-    //  "defaultValue": "https://stagee56e234631d34429ad7.blob.core.windows.net/dbdacpac/pwadb.bacpac?sp=r&st=2018-06-15T21:59:19Z&se=2019-06-08T05:59:19Z&spr=https&sv=2017-11-09&sig=rBHuArzy%2B4yXTlLxuYhrDzvfKx2qQbwumgV1GDxIArQ%3D&sr=b",
-    //  "metadata": {
-    //    "description": "The URL for the GitHub repository that contains the project to deploy."
-    //  }
-    //},
     "branch": {
       "type": "string",
       "defaultValue": "master",
@@ -115,7 +108,7 @@
   "variables": {
     "webSiteName": "[toLower(parameters('siteName'))]",
     "sqlserverName": "[Concat(variables('webSiteName'), 'sqlsrv')]",
-    "hostingPlanName": "pwaappplan",
+    "hostingPlanName": "cpssoplan",
     "skuName": "S1",
     "skuCapacity": "1",
     "administratorLogin": "[Concat(variables('webSiteName'), '-sqladmin')]",
@@ -124,7 +117,7 @@
     "edition": "Basic",
     "maxSizeBytes": "1073741824",
     "requestedServiceObjectiveName": "Basic",
-    "appDBName": "pwadb",
+    "appDBName": "cpssodb",
     "appDBCollation": "SQL_Latin1_General_CP1_CI_AS",
     "appDBEdition": "Basic",
     "appDBRequestedServiceObjectiveName": "Basic",
@@ -193,28 +186,7 @@
             "edition": "[variables('appDBEdition')]",
             "maxSizeBytes": "1073741824",
             "requestedServiceObjectiveName": "[variables('appDBRequestedServiceObjectiveName')]"
-          }//,
-          //"resources": [
-           // {
-           //   "name": "[variables('appDBName')]",
-           //   "type": "extensions",
-           //   "apiVersion": "2014-04-01-preview",
-           //   "dependsOn": [
-           //     "[resourceId('Microsoft.Sql/servers/databases', split(concat(variables('sqlserverName'), '/', variables('appDBName')), '/')[0], split(concat(variables('sqlserverName'), '/', variables('appDBName')), '/')[1])]"
-           //   ],
-           //   "tags": {
-           //     "displayName": "appDB"
-           //   },
-           //     "properties": {
-           //         "storageUri": "[parameters('storageURL')]",
-           //         "administratorLogin": "[variables('administratorLogin')]",
-           //         "administratorLoginPassword": "[parameters('SQL Password')]",
-           //         "operationMode": "Import",
-			//		"storageKeyType": "SharedAccessKey",
-			//		"storageKey": "?",
-            //    }
-           // }
-         // ]
+          }
         }		
       ]
     },
