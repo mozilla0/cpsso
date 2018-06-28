@@ -15,19 +15,7 @@
     },
     "repoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/techdata-cloudautomation/test.git",
-      "metadata": {
-        "description": "The URL for the GitHub repository that contains the project to deploy."
-      }
-    },
-	"accessToken": {
-      "type": "string",
-      "metadata": {
-        "description": "The URL for the GitHub repository that contains the project to deploy."
-      }
-    },
-	"gitUserName": {
-      "type": "string",
+      "defaultValue": "https://github.com/techdata-cloudautomation/CustomerPortalSDKStreamOne.git",
       "metadata": {
         "description": "The URL for the GitHub repository that contains the project to deploy."
       }
@@ -85,6 +73,27 @@
       "type": "String",
       "metadata": {
         "description": "This is the slot for the resellerName"
+      },
+	  "minLength": 1
+    },
+	"NotificationEmails": {
+      "type": "String",
+      "metadata": {
+        "description": "E-mail address that will be notified on every seat change"
+      },
+	  "minLength": 1
+    },
+	"NotificationEmailFrom": {
+      "type": "String",
+      "metadata": {
+        "description": "E-mail that will be used with Microsoft Server to send notifications"
+      },
+	  "minLength": 1
+    },
+	"NotificationEmailPassword": {
+      "type": "String",
+      "metadata": {
+        "description": "Password from NotificationE-mailFrom"
       },
 	  "minLength": 1
     },
