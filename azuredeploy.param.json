@@ -77,21 +77,21 @@
       },
 	  "minLength": 1
     },
-	"NotificationEmails": {
+	"notificationEmails": {
       "type": "String",
       "metadata": {
         "description": "E-mail address that will be notified on every seat change"
       },
 	  "minLength": 1
     },
-	"NotificationEmailFrom": {
+	"notificationEmailFrom": {
       "type": "String",
       "metadata": {
         "description": "E-mail that will be used with Microsoft Server to send notifications"
       },
 	  "minLength": 1
     },
-	"NotificationEmailPassword": {
+	"notificationEmailPassword": {
       "type": "String",
       "metadata": {
         "description": "Password from NotificationE-mailFrom"
