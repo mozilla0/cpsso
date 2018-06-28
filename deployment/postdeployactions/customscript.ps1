@@ -20,6 +20,12 @@ $allowres.value = $env:APPSETTING_key7;
 $clientid = $doc.configuration.appSettings.add | where {$_.Key -eq 'ClientId'}
 $clientid.value = $env:APPSETTING_key5;
 
+$notificationEmails = $doc.configuration.appSettings.add | where {$_.Key -eq 'NotificationEmails'}
+$notificationEmails.value = $env:APPSETTING_key13;
+
+$notificationEmailFrom = $doc.configuration.appSettings.add | where {$_.Key -eq 'NotificationEmailFrom'}
+$notificationEmailFrom.value = $env:APPSETTING_key14;
+
 $root = $doc.get_DocumentElement();
 $pllConString = $root.connectionStrings.add | ? {$_.name -eq 'PLLConnection'}
 $pllnewCon = $pllConString.connectionString.Replace('Server=;Initial Catalog=;Persist Security Info=False;User ID=;Password=;','Server='+$srvsql+';Initial Catalog=pwadb;Persist Security Info=False;User ID='+$usrsql+';Password='+$psdsql+';');
@@ -29,6 +35,9 @@ $pllConString.connectionString = $pllnewCon
 $PrivateLabelConString = $root.connectionStrings.add | ? {$_.name -eq 'PrivateLabelLiteDataEntities'}
 $newPrivateLabelConString = $PrivateLabelConString.connectionString.Replace('data source=;initial catalog=plltest;User ID=;Password=','data source='+$srvsql+';Initial Catalog=pwadb;User ID='+$usrsql+';Password='+$psdsql);
 $PrivateLabelConString.connectionString = $newPrivateLabelConString
+
+$root."system.net".mailSettings.smtp.network.userName = $env:APPSETTING_key14
+$root."system.net".mailSettings.smtp.network.password = $env:APPSETTING_key15
  
 $doc.Save($webConfig)
 

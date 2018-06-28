@@ -297,7 +297,10 @@
 			"key9": "[parameters('clientSecret')]",
 			"key10": "[parameters('resellerId')]",
 			"key11": "[parameters('SOIN')]",
-			"key12": "[parameters('resellerName')]"
+			"key12": "[parameters('resellerName')]",
+			"key13": "[parameters('notificationEmails')]",
+			"key14": "[parameters('notificationEmailFrom')]",
+			"key15": "[parameters('notificationEmailPassword')]"
           }
         }		
       ]
