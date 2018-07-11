@@ -7,7 +7,7 @@
 <p><strong>What does Customer Portal SDK - StreamOne look like?</strong><br /> It looks great! It has a very simple and modern looking Graphical User Interface (GUI).</p>
 <p><strong>What are the customer pre-requisites?</strong><br /> &bull; Reseller agreement<br /> &bull; Partner API credentials<br /> &bull; Azure account<br /> &bull; Microsoft account for login<br /> &bull; Partner resources to maintain it on Azure (estimate monthly cost ~USD50.00)</p>
 <p><strong>How to get onboarded?</strong><br /> Contact SCM Customer Integrations Team according of your region:</p>
-<p><strong>EUROPE</strong><br /> <a href="mailto:EU.TDCloud@techdata.com">EU.TDCloud@techdata.com</a><br /> <strong>US</strong><br /> <a href="mailto:TDCloud@techdata.com">TDCloud@techdata.com</a><br /> <strong>CANADA</strong><br /> <a href="mailto:TDCloudCanada@techdata.ca">TDCloudCanada@techdata.ca</a></p>
+<p><strong>EUROPE</strong><br /> <a href="mailto:EU.TDCloud@Techdata.com">EU.TDCloud@Techdata.com</a><br /> <strong>US</strong><br /> <a href="mailto:PartnerApi@Techdata.com">PartnerApi@Techdata.com</a><br /> <strong>CANADA</strong><br /> <a href="mailto:StreamOne@Techdata.ca">StreamOne@Techdata.ca</a></p>
 <p><strong>Summary - Deployment using Github and ARM</strong><br /> We have accomplished the automation of 90% of the deployment of this SDK application. Tech Data Business Partners with the most Azue knowledge will be able to self-deploy the app. The first step and last step are manual and the average time for the whole process is around 4 minutes;</p>
 <ol>
 <li>Manual - Application creation</li>
@@ -57,8 +57,8 @@
 <p>While issue complexity varies, the goal is to resolve issues within five working days: Monday-Friday: Business Hours.</p>
 <p>All communication will be confidential with very limited circulation.</p>
 <p>Support request emails should be sent to each team in accordance with your region:</p>
-<p><strong>EUROPE</strong><br /> <a href="mailto:EU.API.Support@TechData.com">EU.API.Support@TechData.com</a><br /> <strong>US</strong><br /> <a href="mailto:TDCloud@techdata.com">TDCloud@techdata.com</a></p>
-<p><strong>CANADA</strong><br /> <a href="mailto:TDCloudCanada@techdata.ca">TDCloudCanada@techdata.ca</a></p>
+<p><strong>EUROPE</strong><br /> <a href="mailto:EU.API.Support@TechData.com">EU.API.Support@TechData.com</a><br /> <strong>US</strong><br /> <a href="mailto:PartnerApi@Techdata.com">PartnerApi@Techdata.com</a></p>
+<p><strong>CANADA</strong><br /> <a href="mailto:StreamOne@Techdata.ca">StreamOne@Techdata.ca</a></p>
 <p><strong>Installation Deployment</strong></p>
 <a href="https://azuredeploy.net/" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
