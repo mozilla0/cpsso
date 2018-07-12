@@ -41,7 +41,7 @@
 <ul>
 <li>Auto Deployment Technical Doc SDK Auto-deployment.pdf</li>
 <li>User Manual Customer Portal SDK StreamOne Overview.pdf</li>
-<li>Self Deployment Technical Doc SDK Self Deployment.pdf</li>
+<li>Manual Deployment Technical Doc SDK Self Deployment.pdf</li>
 </ul>
 <p><strong>Support</strong></p>
 <p>What is the process for addressing issues that arise?</p>
