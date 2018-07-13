@@ -62,6 +62,7 @@
 <p>All communication will be confidential with very limited circulation.</p>
 <p>Support request emails should be sent to each team in accordance with your region:</p>
 <p><strong>EUROPE</strong><br /> <a href="mailto:EU.API.Support@TechData.com">EU.API.Support@TechData.com</a><br /> <strong>US</strong><br /><a href="mailto:PartnerApi@Techdata.com">PartnerApi@Techdata.com</a><br /> <strong>CANADA</strong><br /><a href="mailto:StreamOne@Techdata.ca">StreamOne@Techdata.ca</a></p>
+<p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/6.jpg?raw=true" alt="" width="700" height="431" /></p>
 <p><strong>Installation Deployment</strong></p>
 <a href="https://azuredeploy.net/" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
