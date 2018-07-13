@@ -43,9 +43,9 @@
 <p>&nbsp;<strong>Support Documents</strong></p>
 <p>Support Documents are to be found in the root of the application</p>
 <ul>
-<li>Auto Deployment Technical Doc SDK Auto-deployment.pdf</li>
-<li>User Manual Customer Portal SDK StreamOne Overview.pdf</li>
-<li>Manual Deployment Technical Doc SDK Self Deployment.pdf</li>
+<li><a title="Auto Deployment Technical Doc SDK.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Auto%20Deployment%20Technical%20Doc%20SDK.pdf">Auto Deployment Technical Doc SDK.pdf</a></li>
+<li><a title="User Manual Customer Portal SDK StreamOne 1.3 Overview.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/User%20Manual%20Customer%20Portal%20SDK%20StreamOne%201.3%20Overview.pdf">User Manual Customer Portal SDK StreamOne 1.3 Overview.pdf</a></li>
+<li><a title="Manual Deployment Technical Doc SDK.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Manual%20Deployment%20Technical%20Doc%20SDK.pdf">Manual Deployment Technical Doc SDK.pdf</a></li>
 </ul>
 <p><strong>Support</strong></p>
 <p>What is the process for addressing issues that arise?</p>
