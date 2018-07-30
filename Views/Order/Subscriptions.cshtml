@@ -13,15 +13,15 @@
 @*View for reseller*@
 @if (isReseller)
 {
-    <div ng-controller="companyCtrl" ng-init='model = @Html.ToJson(Model);getFirstTimeSubscriptions()' class="container-fluid" id="order">
-        <h3 class="top">
+    <div ng-controller="companyCtrl" ng-init='model = @Html.ToJson(Model);getFirstTimeSubscriptions();checkCompanyTable()' class="container-fluid" id="order">
+        <h3 class="top" ng-cloak>
             <span class="btn-manage-xs pull-right hidden-md hidden-lg" ng-show="showTableHeading==true || model.subscriptionList.length>0">
                 <a data-toggle="collapse" data-target="#search-xs" class="pull-right" style="width:43px">
                     <span class="btn-manage"><i class="fa fa-search" aria-hidden="true"></i></span>
                 </a>
             </span>
         </h3>
-        <div class="main-title">
+        <div class="main-title" ng-cloak>
             <h3>Customer Admin : <span ng-bind="model.filter.companyName"></span></h3>
             <select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions(model.filter)" class="dropdown-theme">
                 <option selected value="" disabled hidden>Choose a company</option>
@@ -29,7 +29,7 @@
             <br><br>
         </div>
         @*Search bar for mobile view*@
-        <section class="row hidden-md hidden-lg data-card collapse" id="search-xs">
+        <section class="row hidden-md hidden-lg data-card collapse" id="search-xs" ng-cloak>
             <div class="col-xs-12">
                 <div class="row data-head">
                     <span>Search for Domain, Product and ResellerPO</span>
@@ -53,9 +53,9 @@
             </div>
         </section>
         <div ng-show="showTableHeading==true || model.subscriptionList.length>0">
-             @*Desktop View*@
-            <div class="row table-responsive hidden-sm hidden-xs" style="min-height:350px">
-                <table class="table table-hover hidden-sm hidden-xs" ng-show="showTableHeading==true || model.subscriptionList.length>0">
+            @*Desktop View*@
+            <div class="row table-responsive hidden-sm hidden-xs" style="min-height:350px" ng-cloak>
+                <table class="table table-hover hidden-sm hidden-xs" ng-show="showTableHeading==true || model.subscriptionList.length>0" ng-cloak>
                     @*Table headings*@
                     <thead>
                         <tr>
@@ -73,7 +73,9 @@
                                        class="bg-theme-color no-focus-line" placeholder="Product" />
                                 <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
                             </th>
-                            <th class = "text-center">Quantity</th>
+                            <th>Cost Price</th>
+                            <th>Sales Price</th>
+                            <th>Quantity</th>
                             <th class="search-th">
                                 <input type="text" ng-model="model.filter.resellerPO" ng-change="getPaginatedSubscriptions()"
                                        ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
@@ -81,7 +83,7 @@
                                 <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
                             </th>
                             <th>SKU</th>
-                            <th class = "text-center">Status</th>
+                            <th>Status</th>
                             <th class="search-th">
                                 <input type="text" ng-model="model.filter.orderNumber" ng-change="getPaginatedSubscriptions()"
                                        ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
@@ -96,10 +98,13 @@
                     <tbody>
                         <tr ng-repeat="subscriptions in model.subscriptionList" ng-cloak>
                             <td><input type="hidden" ng-bind="subscriptions.subscriptionId" /></td>
-
                             <td ng-bind="subscriptions.additionalData.domain"></td>
                             <td ng-bind="subscriptions.name"></td>
-                            <td ng-bind="subscriptions.quantity" class="text-center"></td>
+
+                            <td>{{subscriptions.currencySymbol}} {{subscriptions.unitPrice | number:2}}</td>
+
+                            <td><span ng-if="subscriptions.salesPrice != null">{{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}}</span></td>
+                            <td ng-bind="subscriptions.quantity"></td>
                             <td ng-bind="subscriptions.poNumber"></td>
                             <td ng-bind="subscriptions.sku"></td>
                             <td title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active')}" class="text-center no-padding">
@@ -137,7 +142,17 @@
                             </p>
                         </div>
                         <div class="col-xs-6 no-padding">
-                            <p class="no-margin pull-right"><b>No. :</b>{{subscriptions.orderNumber}}</p>
+                            <p class="no-margin">
+                                <b>Cost Price : {{subscriptions.currencySymbol}} {{subscriptions.unitPrice}}</b>
+                            </p>
+                        </div>
+                        <div class="col-xs-6 no-padding margin-top10">
+                            <p class="no-margin">
+                                <b>Sales Price : <span ng-if="subscriptions.salesPrice != null">{{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}}</span></b>
+                            </p>
+                        </div>
+                        <div class="col-xs-6 no-padding margin-top10">
+                            <p class="no-margin"><b>No. :</b>{{subscriptions.orderNumber}}</p>
                         </div>
                         <div class="btn-manage-xs">
                             <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}" class="pull-right">
@@ -183,148 +198,170 @@
     @*View for End User*@
 else
 {
-    <div ng-controller="orderCtrl" ng-init='model = @Html.ToJson(Model);getUserSubscriptions()' class="container-fluid" id="order">
-        <h3 class="top">
-            <span class="btn-manage-xs pull-right hidden-md hidden-lg" ng-show="showTableHeading==true || model.subscriptionList.length>0">
-                <a data-toggle="collapse" data-target="#search-xs" class="pull-right" style="width:43px">
-                    <span class="btn-manage"><i class="fa fa-search" aria-hidden="true"></i></span>
-                </a>
-            </span>
-        </h3>
-        <div>
-            <h3>Product Management</h3>
-        </div>
-        @*Search bar for mobile view*@
-        <section class="row hidden-md hidden-lg data-card collapse" id="search-xs">
-            <div class="col-xs-12">
-                <div class="row data-head">
-                    <span>Search for Product </span>
-                </div>
-                <div class="row data-body">
-                    @*<div class="col-sm-4 col-xs-12">
-                            <input type="text"
-                                   ng-model="model.filter.domain"
-                                   ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                                   name="domain" class="form-control"
-                                   placeholder="Domain" />
-                        </div>*@
-                    <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.productName" ng-enter="model.filter.page =1;getUserSubscriptions()" name="productName" class="form-control" placeholder="Product" /></div>
-                    @*<div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.resellerPO" ng-enter="model.filter.page = 1;getPaginatedSubscriptions()" name="resellerPO" class="form-control" placeholder="ResellerPO" /></div>*@
-                </div>
-                <div class="row data-footer">
-                    <center>
-                        <button class="btn btn-sm bg-theme-color" ng-click="hideSearchBar();getUserSubscriptions()" style="border-radius:20px"><b> Go &nbsp; &rarr;</b></button>
-                    </center>
-                </div>
+    <div ng-controller="orderCtrl" ng-init='model = @Html.ToJson(Model);getUserSubscriptions();' class="container-fluid" id="order" ng-cloak>
+        <div ng-show="userAuthorized" ng-cloak>
+            <h3 class="top">
+                <span class="btn-manage-xs pull-right hidden-md hidden-lg" ng-show="showTableHeading==true || model.subscriptionList.length>0">
+                    <a data-toggle="collapse" data-target="#search-xs" class="pull-right" style="width:43px">
+                        <span class="btn-manage"><i class="fa fa-search" aria-hidden="true"></i></span>
+                    </a>
+                </span>
+            </h3>
+            <div ng-hide="userAuthorized" ng-cloak>
+                <h3>Product Management</h3>
             </div>
-        </section>
-
-        @*Desktop View*@
-        <div class="row table-responsive hidden-sm hidden-xs" style="min-height:350px">
-            <table class="table table-hover hidden-sm hidden-xs" ng-show="showTableHeading==true || model.subscriptionList.length>0">
-                @*Table headings*@
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Company</th>
-                        <th>Domain</th>
-                        <th class="search-th">
-                            <input type="text" ng-model="model.filter.productName" ng-change="getUserSubscriptions()"
-                                   ng-enter="model.filter.page =1;getUserSubscriptions()"
-                                   class="bg-theme-color no-focus-line" placeholder="Product" />
-                            <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getUserSubscriptions()"></i>
-                        </th>
-                        <th class="text-center">Quantity</th>
-
-                        <th>SKU</th>
-                        <th class="text-center">Status</th>
-                        @*<th>Order</th>*@
-                        <th class="text-center">Order Status</th>
-                        <th class="no-padding">PurchasedOn</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="subscriptions in model.subscriptionList" ng-cloak>
-                        <td><input type="hidden" ng-bind="subscriptions.subscriptionId" /></td>
-                        <td ng-bind="subscriptions.company"></td>
-
-                        <td ng-bind="subscriptions.additionalData.domain"></td>
-                        <td ng-bind="subscriptions.name"></td>
-                        <td ng-bind="subscriptions.quantity" class="text-center no-padding"></td>
-
-                        <td ng-bind="subscriptions.sku"></td>
-                        <td title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active') }" class="no-padding text-center">
-                            <i ng-class="{'fa-times-circle':(subscriptions.lineStatus=='cancelled' || subscriptions.lineStatus=='inactive'),
-                                                   'fa-spinner fa-spin no-padding':subscriptions.lineStatus=='processing',
-                                                   'fa-check-circle':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active'),
-                                                   'fa-hourglass-half':subscriptions.lineStatus=='pending' }" class="fa" aria-hidden="true"></i>
-                        </td>
-                        @*<td ng-bind="subscriptions.orderNumber" ng-model="subscription.orderNumber"></td>*@
-                        <td title="{{subscriptions.orderStatus}}" ng-class="{'text-red':subscriptions.orderStatus=='Cancelled','text-green':subscriptions.orderStatus=='Complete'}" class="text-center no-padding">
-                            <i ng-class="{'fa-times-circle':subscriptions.orderStatus=='Cancelled','fa-spinner fa-spin no-padding':subscriptions.orderStatus=='Processing','fa-clock-o':subscriptions.orderStatus=='Open','fa-check-circle':subscriptions.orderStatus=='Complete'}" class="fa text-center" aria-hidden="true"></i>
-                        </td>
-                        <td>{{subscriptions.orderDate | date:'dd/MMM/yy'}}</td>
-                        <td title="Manage" ng-show="model.subscriptionList.length > 0">
-                            <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}">
-                                <span class="btn-manage"><i class="fa fa-pencil" aria-hidden="true"></i></span>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        @*Mobile View*@
-        <section class="row hidden-md hidden-lg data-card" ng-repeat="subscriptions in model.subscriptionList">
-            <div class="col-xs-12" ng-show="showTableHeading==true || model.subscriptionList.length>0">
-                <div class="row data-head">
-                    <div class="col-xs-6 no-padding">
-                        <p class="no-margin">
-                            <b>Order Status : &nbsp;</b><span title="{{subscriptions.orderStatus}}" ng-class="{'text-red':subscriptions.status=='Cancelled','text-green':subscriptions.status=='Complete'}" class="text-center">
-                                <i ng-class="{'fa-times-circle':subscriptions.status=='Cancelled','fa-spinner fa-spin no-padding':subscriptions.orderStatus=='Processing','fa-clock-o':subscriptions.status=='Open','fa-check-circle':subscriptions.status=='Complete'}" class="fa text-center" aria-hidden="true"></i>
-                            </span>
-                        </p>
+            @*Search bar for mobile view*@
+            <section class="row hidden-md hidden-lg data-card collapse" id="search-xs">
+                <div class="col-xs-12">
+                    <div class="row data-head">
+                        <span>Search for Product </span>
                     </div>
-                    @*<div class="col-xs-6 no-padding">
-                        <p class="no-margin pull-right"><b>No. :</b>{{subscriptions.orderNumber}}</p>
-                    </div>*@
-                    <div class="btn-manage-xs">
-                        <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}" class="pull-right">
-                            <span class="btn-manage"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></span>
-                        </a>
+                    <div class="row data-body">
+                        @*<div class="col-sm-4 col-xs-12">
+                                <input type="text"
+                                       ng-model="model.filter.domain"
+                                       ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                       name="domain" class="form-control"
+                                       placeholder="Domain" />
+                            </div>*@
+                        <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.productName" ng-enter="model.filter.page =1;getUserSubscriptions()" name="productName" class="form-control" placeholder="Product" /></div>
+                        @*<div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.resellerPO" ng-enter="model.filter.page = 1;getPaginatedSubscriptions()" name="resellerPO" class="form-control" placeholder="ResellerPO" /></div>*@
+                    </div>
+                    <div class="row data-footer">
+                        <center>
+                            <button class="btn btn-sm bg-theme-color" ng-click="hideSearchBar();getUserSubscriptions()" style="border-radius:20px"><b> Go &nbsp; &rarr;</b></button>
+                        </center>
                     </div>
                 </div>
-                <div class="row data-body">
-                    <p><b class="col-xs-4 no-padding">Purchased On :</b> {{subscriptions.orderDate | date:'dd/MMM/yy'}}</p>
-                    <p><b class="col-xs-4 no-padding">Domain :</b> {{subscriptions.additionalData.domain}}</p>
-                    <p><b class="col-xs-4 no-padding">Company :</b> {{subscriptions.company}}</p>
+            </section>
 
-                </div>
-                <div class="row data-footer">
-                    <div class="col-xs-7 no-padding">
-                        <label class="no-margin">Product(s)</label>
-                        <p class="no-margin">{{subscriptions.name}}</p>
-                    </div>
-                    <div class="col-xs-3 no-padding">
-                        <label class="no-margin">SKU</label>
-                        <p class="no-margin">
-                            {{subscriptions.sku}} &nbsp;<span title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active') }" class="no-padding text-center">
+            @*Desktop View*@
+            <div class="row table-responsive hidden-sm hidden-xs" style="min-height:350px" ng-cloak>
+                <table class="table table-hover hidden-sm hidden-xs" ng-show="showTableHeading==true || model.subscriptionList.length>0">
+                    @*Table headings*@
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Company</th>
+                            <th>Domain</th>
+                            <th class="search-th">
+                                <input type="text" ng-model="model.filter.productName" ng-change="getUserSubscriptions()"
+                                       ng-enter="model.filter.page =1;getUserSubscriptions()"
+                                       class="bg-theme-color no-focus-line" placeholder="Product" />
+                                <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getUserSubscriptions()"></i>
+                            </th>
+
+                            <th>Price</th>
+                            <th class="text-center">Quantity</th>
+
+                            <th>SKU</th>
+                            <th class="text-center">Status</th>
+                            @*<th>Order</th>*@
+                            <th class="text-center">Order Status</th>
+                            <th class="no-padding">PurchasedOn</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="subscriptions in model.subscriptionList" ng-cloak>
+                            <td><input type="hidden" ng-bind="subscriptions.subscriptionId" /></td>
+                            <td ng-bind="subscriptions.company"></td>
+
+                            <td ng-bind="subscriptions.additionalData.domain"></td>
+                            <td ng-bind="subscriptions.name"></td>
+
+                            <td><span ng-if="subscriptions.salesPrice !=null">{{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}}</span></td>
+                            <td ng-bind="subscriptions.quantity" class="text-center no-padding"></td>
+
+                            <td ng-bind="subscriptions.sku"></td>
+                            <td title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active') }" class="no-padding text-center">
                                 <i ng-class="{'fa-times-circle':(subscriptions.lineStatus=='cancelled' || subscriptions.lineStatus=='inactive'),
                                                    'fa-spinner fa-spin no-padding':subscriptions.lineStatus=='processing',
                                                    'fa-check-circle':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active'),
                                                    'fa-hourglass-half':subscriptions.lineStatus=='pending' }" class="fa" aria-hidden="true"></i>
-                            </span>
-                        </p>
+                            </td>
+                            @*<td ng-bind="subscriptions.orderNumber" ng-model="subscription.orderNumber"></td>*@
+                            <td title="{{subscriptions.orderStatus}}" ng-class="{'text-red':subscriptions.orderStatus=='Cancelled','text-green':subscriptions.orderStatus=='Complete'}" class="text-center no-padding">
+                                <i ng-class="{'fa-times-circle':subscriptions.orderStatus=='Cancelled','fa-spinner fa-spin no-padding':subscriptions.orderStatus=='Processing','fa-clock-o':subscriptions.orderStatus=='Open','fa-check-circle':subscriptions.orderStatus=='Complete'}" class="fa text-center" aria-hidden="true"></i>
+                            </td>
+                            <td>{{subscriptions.orderDate | date:'dd/MMM/yy'}}</td>
+                            <td title="Manage" ng-show="model.subscriptionList.length > 0">
+                                <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}">
+                                    <span class="btn-manage"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            @*Mobile View*@
+            <section class="row hidden-md hidden-lg data-card margin-top30" ng-cloak ng-repeat="subscriptions in model.subscriptionList">
+                <div class="col-xs-12" ng-show="showTableHeading==true || model.subscriptionList.length>0">
+                    <div class="row data-head">
+                        <div class="col-xs-6 no-padding">
+                            <p class="no-margin">
+                                <b>Order Status : &nbsp;</b><span title="{{subscriptions.orderStatus}}" ng-class="{'text-red':subscriptions.orderStatus=='Cancelled','text-green':subscriptions.orderStatus=='Complete'}" class="text-center">
+                                    <i ng-class="{'fa-times-circle':subscriptions.orderStatus=='Cancelled','fa-spinner fa-spin no-padding':subscriptions.orderStatus=='Processing','fa-clock-o':subscriptions.orderStatus=='Open','fa-check-circle':subscriptions.orderStatus=='Complete'}" class="fa text-center" aria-hidden="true"></i>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="col-xs-6 no-padding">
+                            <p class="no-margin">
+                                <b>Sales Price : <span ng-if="subscriptions.salesPrice !=null"> {{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}}</span></b>
+                            </p>
+                        </div>
+                        <div class="btn-manage-xs">
+                            <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}" class="pull-right">
+                                <span class="btn-manage"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></span>
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-xs-2 no-padding">
-                        <span class="pull-right">
-                            <label class="no-margin">Qty</label>
-                            <p class="no-margin text-right">{{ subscriptions.quantity }}</p>
-                        </span>
+                    <div class="row data-body">
+                        <p><b class="col-xs-4 no-padding">Purchased On :</b> {{subscriptions.orderDate | date:'dd/MMM/yy'}}</p>
+                        <p><b class="col-xs-4 no-padding">Domain :</b> {{subscriptions.additionalData.domain}}</p>
+                        <p><b class="col-xs-4 no-padding">Company :</b> {{subscriptions.company}}</p>
+
+                    </div>
+                    <div class="row data-footer">
+                        <div class="col-xs-7 no-padding">
+                            <label class="no-margin">Product(s)</label>
+                            <p class="no-margin">{{subscriptions.name}}</p>
+                        </div>
+                        <div class="col-xs-3 no-padding">
+                            <label class="no-margin">SKU</label>
+                            <p class="no-margin">
+                                {{subscriptions.sku}} &nbsp;<span title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active') }" class="no-padding text-center">
+                                    <i ng-class="{'fa-times-circle':(subscriptions.lineStatus=='cancelled' || subscriptions.lineStatus=='inactive'),
+                                                   'fa-spinner fa-spin no-padding':subscriptions.lineStatus=='processing',
+                                                   'fa-check-circle':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active'),
+                                                   'fa-hourglass-half':subscriptions.lineStatus=='pending' }" class="fa" aria-hidden="true"></i>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-xs-2 no-padding">
+                            <span class="pull-right">
+                                <label class="no-margin">Qty</label>
+                                <p class="no-margin text-right">{{ subscriptions.quantity }}</p>
+                            </span>
+                        </div>
                     </div>
                 </div>
+            </section>
+            @*<div paging updatemethod="getUserSubscriptions" pageno="model.filter.page" pagesize="@ConfigKeys.PageSize" totalrecords="model.subscriptionList[0].totalrecords" isfixedpagesize="true"></div>*@
+        </div>
+            <div ng-cloak>
+                <span  class="text-center ng-cloak" ng-hide="userAuthorized">
+                    <span ng-if="!userNotMapped">@Html.Partial("_Error", "No subscription available to manage at the moment.")</span>
+                    <span ng-if="userNotMapped">@Html.Partial("_Error", "You are not Authorized, Please contact your Administrator.")</span>
+                   
+                </span>
+               
+                @*<h4 class="ng-cloak" ng-cloak>
+                    <i class="fa fa-exclamation-triangle ng-cloak" ng-cloak aria-hidden="true"></i>
+                    You are not Authorized, Please contact your Administrator.
+                </h4>*@
             </div>
-        </section>
-        @*<div paging updatemethod="getUserSubscriptions" pageno="model.filter.page" pagesize="@ConfigKeys.PageSize" totalrecords="model.subscriptionList[0].totalrecords" isfixedpagesize="true"></div>*@
     </div>
 }

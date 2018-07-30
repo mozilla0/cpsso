@@ -6,7 +6,7 @@
     {
         @Html.AntiForgeryToken()
         <ul class="nav navbar-nav navbar-right">
-            <li>
+            <li class="visible-lg visible-md">
                 <a style="cursor:inherit">Hello  @User.Identity.GetUserName() </a> 
             </li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>

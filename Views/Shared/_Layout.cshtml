@@ -1,6 +1,7 @@
 ﻿@using PrivateLabelLite.Controllers;
 @using PrivateLabelLite.Helper;
 @using PrivateLabelLite.Entities.Common;
+@using Microsoft.AspNet.Identity;
 @{
     bool isReseller = false;
     if (!String.IsNullOrEmpty(User.Identity.Email()) && ConfigKeys.AllowedResellers.ToLower().Contains(User.Identity.Email().ToLower()))
@@ -17,7 +18,7 @@
     @Styles.Render("~/Content/css")
     @*@Scripts.Render("~/bundles/modernizr")*@ 
 </head>
-<body ng-app="app" ng-controller="globalCtrl">
+<body ng-app="app" ng-cloak ng-controller="globalCtrl">
     <div class="navbar navbar-default navbar-fixed-top container-fluid">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -43,13 +44,16 @@
                     {
                         if (!string.IsNullOrEmpty(User.Identity.Email()) && (ConfigKeys.AllowedResellers ?? "").ToLower().Contains(User.Identity.Email().ToLower()))
                         {
-                    @*<li>@Html.ActionLink("Customer Admin", "Subscriptions", "Order")</li>*@
+                            <li class="visible-sm visible-xs">
+                                <a style="cursor:inherit">Hello  @User.Identity.GetUserName() </a>
+                            </li>
                             <li><a href='@Url.Action("Subscriptions", "Order",new { id = (string)null })'>Customer Admin</a></li>
                             <li class="dropdown ">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Settings <i class="fa fa-caret-down" aria-hidden="true"></i></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="/company/endUserMapping">Add App User </a></li>
                                     <li><a href="/company/SalesOrderMapping">Sales Order Mapping</a></li>
+                                    <li><a href="/company/EditProducts">Price Management</a></li>
                                 </ul>
                             </li>
                         }
@@ -77,15 +81,15 @@
                 <img class="img-responsive" src="~/Assets/images/Tech Data Cloud Solutions StreamOne.jpg" />
             </div>*@
             <div class="col-lg-7 col-md-6 col-sm-4 col-xs-12 margin-top10">
-                <span>&copy; @DateTime.Now.Year @ConfigKeys.ApplicationName</span>
-                <a ng-click="showSiteTermsAndConditions()" class="text-center">Terms & Conditions</a>
+                <span>&copy; @DateTime.Now.Year @ConfigKeys.ApplicationName  V 1.40</span>
+                <a ng-click="showSiteTermsAndConditions()" class="text-center">End User Terms and Conditions</a>
             </div>
         }
         else
         {
             <div>
-                <span>&copy; @DateTime.Now.Year @ConfigKeys.ApplicationName</span>
-                <a ng-click="showSiteTermsAndConditions()" class="text-center">Terms & Conditions</a>
+                <span>&copy; @DateTime.Now.Year @ConfigKeys.ApplicationName  V 1.40</span>
+                <a ng-click="showSiteTermsAndConditions()" class="text-center">End User Terms and Conditions</a>
             </div>
         }
     </footer>

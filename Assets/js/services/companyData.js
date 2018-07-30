@@ -107,6 +107,16 @@
                 return $http.post(BASE_URL + 'company/checkDatabase').then(function (data) {
                     return data;
                 });
+            },
+            saveMarkup: function (markup) {
+                return $http.post(BASE_URL + 'company/saveMarkup',markup).then(function (data) {
+                    return data;
+                });
+            },
+            checkCompanyTable: function () {
+                return $http.post(BASE_URL + 'company/checkCompanyTable').then(function (data) {
+                    return data;
+                })
             }
 
         };

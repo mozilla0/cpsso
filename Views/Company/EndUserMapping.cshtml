@@ -12,7 +12,7 @@
         </a>
     </span>
 </h3>
-<div ng-controller="companyCtrl" ng-init='model=@Html.ToJson(Model); model.user = {};isVisible=true ; showSingleDelete = false' class="container-fluid">
+<div ng-controller="companyCtrl" ng-init='model=@Html.ToJson(Model); model.user = {};isVisible=true ; showSingleDelete = false;checkCompanyTable()' class="container-fluid">
     <div>
         <h3>App User Management</h3>
         <button class="btn btn-sm btn-primary" ng-click="showEndUserPopup()">Add App User</button>

@@ -65,7 +65,7 @@ a.font-danger {
     background: rgba(224, 21, 21, 0.82);
 }
 
-.dropdown:hover .dropdown-menu {
+.open .dropdown-menu {
     display: block;
     margin-top: 0;
 }
@@ -373,6 +373,7 @@ a {
     background: #5070e0;
     width: 100%;
     max-width: 100% !important;
+    position:relative;
 }
 
     #order .search-th input::placeholder {
@@ -538,7 +539,7 @@ a {
 
     .main-title {
         margin-left: -15px;
-        padding-bottom:15px;
+        padding-bottom: 15px;
     }
 
         .main-title h3 {
@@ -684,4 +685,13 @@ a {
     color: white;
     /*height: 30px;*/
     height: 30px;
+}
+
+.input-alert {
+    color: red;
+    font-size: 10px;
+    padding-top: 5px;
+}
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
 }
