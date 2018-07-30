@@ -260,7 +260,7 @@
 			"key14": "[parameters('notificationEmailFrom')]",
 			"key15": "[parameters('notificationEmailPassword')]"
           }
-        }	
+        },	
 		{
           "apiVersion": "2015-08-01",
           "name": "web",
