@@ -2,43 +2,26 @@
 
     'use strict';
     app.controller('companyCtrl', companyCtrl);
-    app.constant('CONSTANTS', { ALL_COMPANY: 'ALL' });
-    companyCtrl.$inject = ["$scope", "companyData", "$rootScope", "CONSTANTS"];
-    function companyCtrl($scope, companyData, $rootScope, CONSTANTS) {
+    companyCtrl.$inject = ["$scope", "companyData", "$rootScope"];
+    function companyCtrl($scope, companyData, $rootScope) {
         $scope.checkedUsers = [];
-        $scope.toBeMapped = [];
-        $scope.toBeUnMapped = [];
-        $scope.selectedSubscriptionForMarkUp = {};
-        $scope.showTableHeading = false;
-        $scope.company = null;
         $scope.showEndUserPopup = function () {
             $scope.model.user = { email: '' };
             $("#endUserPopup").modal();
             $scope.isSuccess = false;
             $scope.message = '';
-            $scope.addEditUserHeader = 'Add App User';
+            $scope.addEditUserHeader = 'Add New User';
         };
-
-
         $scope.addEndUserMapping = function (model) {
             var user = model.user;
-            var companyName = user.companyName || $scope.model.user.selectedCompany.companyName;
-            var companyId = user.selectedCompany ? user.selectedCompany.companyId : null;
-            var createdBy = user.createdBy ? user.createdBy : null;
-            var created = user.created ? user.created : null;
-            var id = user.id ? user.id : null;
-
+            user.companyName = user.companyName || $scope.model.user.selectedCompany.companyName;
             user.token = angular.element('input[name="__RequestVerificationToken"]').attr('value');
             var companyUser = new FormData();
-            companyUser.append("companyName", companyName);
+            companyUser.append("companyName", user.companyName);
             companyUser.append("email", user.email);
             companyUser.append("name", user.name);
-            companyUser.append("companyId", companyId);
-            companyUser.append("id", id);
-            companyUser.append("createdBy", createdBy);
-            companyUser.append("created", created);
-            companyUser.append("companyId", companyId);
-            //companyUser.append("companyName", user.selectedCompany.companyName);
+            companyUser.append("companyId", user.selectedCompany.companyId);
+            companyUser.append("companyName", user.selectedCompany.companyName);
             companyUser.append('__RequestVerificationToken', user.token);
 
             companyData.addEndUserMapping(companyUser).then(function (resp) {
@@ -174,7 +157,7 @@
             $scope.checkedUsers.push(user.id);
             $scope.model.user = user;
             $scope.isSuccess = false;
-            $scope.message = "Are you sure you want to delete the user " + user.name + " ?";
+            $scope.message = "Are you sure you want to delete the user " + user.name + " ? If you leave a company without any users the Sales Order will not be visible";  //"Are you sure you want to delete user : " + user.name;
             $("#deleteEndUserPopup").modal();
         };
         $scope.showMultipleDeleteEndUserPopup = function () {
@@ -186,7 +169,7 @@
             });
 
             $scope.isSuccess = false;
-            $scope.message = "Are you sure you want to delete the users ?";
+            $scope.message = "Are you sure you want to delete the users ? If you leave a company without any users the Sales Order will not be visible";  //"Are you sure you want to delete user : " + user.name;
             $("#deleteMultipleEndUserPopup").modal();
         };
         // END OF POP-UP TO DELETE ENDUSER
@@ -220,7 +203,7 @@
             var token = angular.element('input[name="__RequestVerificationToken"]').attr('value');
             var Ids = '';
             angular.forEach($scope.checkedUsers, function (user, index) {
-                Ids = Ids + user + ',';
+                Ids= Ids+user+',';
             });
             var deleteUser = new FormData();
             deleteUser.append("CustomerId", Ids);
@@ -244,7 +227,7 @@
         $scope.deleteCompanyOrderMapping = function () {
             var token = angular.element('input[name="__RequestVerificationToken"]').attr('value');
             var Ids = '';
-            angular.forEach($scope.toBeUnMapped, function (user, index) {
+            angular.forEach($scope.checkedUsers, function (user, index) {
                 Ids = Ids + user + ',';
             });
             var deleteMapping = new FormData();
@@ -267,7 +250,6 @@
         $scope.getPaginatedUsers = function () {
             $scope.getCompanyEndUsers($scope.model.filter);
         };
-
 
         $scope.clearOrderSearch = function () {
             $scope.model.filter.salesOrderIds = null;
@@ -344,217 +326,7 @@
 
             });
         };
-
-        $scope.getPaginatedSubscriptions = function (model) {
-            companyData.getPaginatedSubscriptions($scope.model.filter).then(function (resp) {
-                //$scope.company = $scope.model.filter.companyName;
-                $scope.model.subscriptionList = resp.data.subscriptionList;
-                $scope.showTableHeading = true;
-                $scope.model.subscriptionList.length = resp.data.subscriptionList.length;
-                if ($scope.model.subscriptionList.length > 0) {
-                    $scope.showMobileView = true;
-                }
-
-            })
-
-                .catch(function () {
-                });
-
-        };
-
-
-
-        $scope.SaveMapping = function () {
-
-            var subscriptions = $scope.model.subscriptionList;
-            angular.forEach($scope.model.subscriptionList, function (subscription, index) {
-                if (subscription.mapping == true) {
-                    if (!$scope.toBeMapped.indexOf(subscription.orderNumber && subscription.sku) !== -1) {
-                        $scope.toBeMapped.push({ orderNumber: subscription.orderNumber , sku:subscription.sku });
-                        $('#successModal').modal('show');
-                    }
-
-                }
-
-                if (subscription.changedStatus && subscription.mappingStatus == 'MAPPED') {
-                    if (!$scope.toBeUnMapped.indexOf(subscription.orderNumber && subscription.sku) !== -1) {
-                        $scope.toBeUnMapped.push({ orderNumber: subscription.orderNumber, sku: subscription.sku });
-                        subscription.changedStatus = false;
-
-                    }
-
-                }
-            });
-            companyData.saveMapping($scope.toBeUnMapped, $scope.toBeMapped).then(function (resp) {
-                if (resp.data.isValid) {
-                    $('#successModal').modal('show');
-                    $scope.successModalMessage = resp.data.message;
-                    $scope.toBeMapped = [];
-                    $scope.toBeUnMapped = [];
-                    $scope.getPaginatedSubscriptions();
-                }
-                else {
-                    $('#successModal').modal('show');
-                    $scope.successModalMessage = resp.data.message;
-                  
-                }
-                
-            }).catch(function () {
-
-            });
-        };
-
-        $scope.initSubscriptionDetail = function () {
-            companyData.updateSubscriptionDetail().then(function (resp) {
-                var response = resp.data;
-                if (response == "True")
-                {
-                    $scope.SubscriptionDetailModalTitle = "Subscriptions Status:  ";
-                    $scope.SubscriptionDetailModalMessage = "Your Subscriptions List has been succesfully updated from StreamOne"
-                    $scope.initSubscriptionSuccess = true;
-                }
-                else
-                {
-                    $scope.SubscriptionDetailModalTitle = "Subscriptions Status:  ";
-                    $scope.SubscriptionDetailModalMessage = "Subscriptions List updation has been failed, Please contact your administrator."
-                    $scope.initSubscriptionSuccess = true;
-                }
-            })
-            .catch(function () {
-
-            });
-        };
-        $scope.initMapping = function () {
-            angular.forEach($scope.model.subscriptionList, function (item) {
-                item.mapping = false;
-            });
-        },
-        $scope.getFirstTimeSubscriptions = function () {
-            //check if database is empty only then call get all subscriptions
-            companyData.checkDatabase().then(function (resp) {
-                var response = resp.data;
-                if (response == "True") {
-                    $scope.initSubscriptionDetail();
-                }
-            })
-            .catch(function () {
-
-            });
-        },
-       
-        $scope.showSaveMarkupModal = function () {
-            $scope.saveCompanyLevelMarkUpMessage = "Are you sure you want to perform this update?";
-            $("#saveCompanyLevelMarkUp").modal();
-        }
-        $scope.saveMarkup = function (markup, company) {
-            markup.company = company;
-           
-            companyData.saveMarkup(markup).then(function (resp) {
-                if (resp) {
-                    $scope.CompanyLevelMarkUpSuccessMessage = "Changes updated Successfully"
-                }
-                else {
-                    $scope.CompanyLevelMarkUpSuccessMessage = "Changes updation failed"
-                }
-                $("#CompanyLevelMarkUpSuccess").modal();
-                $scope.getPaginatedSubscriptions();
-                $scope.selectedSubscriptionForMarkUp = {};
-            })
-            .catch(function () {
-            });
-        }
-
-        $scope.checkCompanyTable = function () {
-            companyData.checkCompanyTable().then(function (resp) {
-                var response = resp.data;
-                if (response == "True") {
-                    $scope.refreshCompanies();
-                }
-            }).catch(function () {
-
-            })
-        }
-        $scope.saveSelectedData = function (subscription) {
-            $scope.oldData = angular.copy(subscription);
-            angular.forEach($scope.model.subscriptionList, function (subscriptions, index) {
-                if (subscriptions.subscriptionId != subscription.subscriptionId) {
-                    subscriptions.disableOtherEdits = false;                   
-                }
-            });
-        }
-
-        $scope.getOldData = function (subscription) {
-            angular.forEach($scope.model.subscriptionList, function (subscriptions, index) {
-                    subscriptions.disableOtherEdits = true;
-                
-            });
-
-            if (subscription.subscriptionId == $scope.oldData.subscriptionId) {
-                subscription.markUpPercentage = $scope.oldData.markUpPercentage;
-                subscription.salesPrice = $scope.oldData.salesPrice;
-                subscription.seatLimit = $scope.oldData.seatLimit;
-                subscription.taxStatus = $scope.oldData.taxStatus;
-            }
-        }
-
-        $scope.SubscriptionDetailModal = function () {
-            $("#initSubscriptionDetailModal").modal();
-            $scope.SubscriptionDetailModalTitle = "Get Subscriptions :  ";
-            $scope.SubscriptionDetailModalMessage = "Are you sure you want to update your Subscriptions List from StreamOne? Do you have new subscriptions in StreamOne that don't show up in the App? The process can take minutes depending on the number of your subscriptions you manage. Please confirm before proceeding."
-            //$scope.initSubscriptionSuccess = true;
-        }
-        $scope.synchronizeSeatLimit = function (subscriptions) {
-            if (subscriptions.seatLimit == undefined) {
-                $scope.showEdit = true;
-            }
-            else {
-                $scope.showEdit = false;
-            }
-        }
-        $scope.synchronizeMarkUp = function (dynamic, subscriptions, flag) {
-            if (subscriptions.markUpPercentage == undefined || subscriptions.salesPrice == undefined) {
-                $scope.showEdit = true;
-            }
-            else {
-                $scope.showEdit = false;
-            }
-
-            var currentObj;
-           // var currentObj = $scope.model.subscriptionList.find(i => i.subscriptionId == subscriptions.subscriptionId);
-            angular.forEach($scope.model.subscriptionList, function (subscription, index) {
-                if (subscription.subscriptionId == subscriptions.subscriptionId) {
-                     currentObj = subscriptions;
-                }
-            });
-          
-            if (flag == 0) //flag is zero, means MarkUp Percentage is recieved and calculate salesprice
-            {
-               // currentObj.markUpPercentage = parseFloat(dynamic.toFixed(2));
-                currentObj.markUpPercentage = Math.round(dynamic * Math.pow(10, 2)) / Math.pow(10, 2);
-                var salesprice = parseFloat(subscriptions.unitPrice) + ((dynamic / 100) * (parseFloat(subscriptions.unitPrice)));
-                salesprice = Math.round(salesprice * Math.pow(10, 2)) / Math.pow(10, 2);
-                angular.forEach($scope.model.subscriptionList, function (subscription, index) {
-                    if (subscription.subscriptionId == subscriptions.subscriptionId) {
-                        subscription.salesPrice = salesprice;
-                    }
-                });
-                
-            }
-            else //flag is 1, means salesprice  is recieved and calculate Markup Percentage
-            {
-                // currentObj.salesPrice = parseFloat(dynamic.toFixed(2));
-                currentObj.salesPrice = Math.round(dynamic * Math.pow(10, 2)) / Math.pow(10, 2);
-                var markUp = ((dynamic - parseFloat(subscriptions.unitPrice)) / parseFloat(subscriptions.unitPrice)) * 100;
-                markUp = Math.round(markUp * Math.pow(10, 2)) / Math.pow(10, 2);
-                angular.forEach($scope.model.subscriptionList, function (subscription, index) {
-                    if (subscription.subscriptionId == subscriptions.subscriptionId) {
-                        subscription.markUpPercentage = markUp;
-                    }
-                });
-            }
-        }
     }
-
 
 
 })();

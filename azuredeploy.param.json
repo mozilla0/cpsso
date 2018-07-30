@@ -16,7 +16,7 @@
     },
 	"repoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/techdata-cloudautomation/cpsso.git",
+      "defaultValue": "https://github.com/techdata-cloudautomation/cpssoqa.git",
       "metadata": {
         "description": "The URL for the GitHub repository that contains the project to deploy."
       }
@@ -28,7 +28,7 @@
       },
 	  "minLength": 1
     },
-	 "applicationPasscode": {
+	 "application Password": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the Application Passcode"
@@ -42,14 +42,14 @@
       },
 	  "minLength": 1
     },
-	"clientId": {
+	"clientId (Password)": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the ClientId"
       },
 	  "minLength": 1
     },
-	"clientSecret": {
+	"client Secret (Password)": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the clientSecret"
@@ -63,7 +63,7 @@
       },
 	  "minLength": 1
     },
-	"SOIN": {
+	"SOIN (Password)": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the SOIN"
@@ -76,6 +76,14 @@
         "description": "This is the slot for the resellerName"
       },
 	  "minLength": 1
+    },
+	"Reseller Region": {
+      "type": "string",
+    "allowedValues": [
+      "US",
+      "EUROPE",
+      "CANADA"
+    ]
     },
 	"notificationEmails": {
       "type": "String",

@@ -15,7 +15,7 @@
     },
     "repoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/techdata-cloudautomation/cpsso.git",
+      "defaultValue": "https://github.com/techdata-cloudautomation/cpssoqa.git",
       "metadata": {
         "description": "The URL for the GitHub repository that contains the project to deploy."
       }
@@ -27,7 +27,7 @@
       },
 	  "minLength": 1
     },
-	 "applicationPasscode": {
+	 "application Password": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the Application Passcode"
@@ -41,14 +41,14 @@
       },
 	  "minLength": 1
     },
-	"clientId": {
+	"clientId (Password)": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the ClientId"
       },
 	  "minLength": 1
     },
-	"clientSecret": {
+	"client Secret (Password)": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the clientSecret"
@@ -62,7 +62,7 @@
       },
 	  "minLength": 1
     },
-	"SOIN": {
+	"SOIN (Password)": {
       "type": "String",
       "metadata": {
         "description": "This is the slot for the SOIN"
@@ -76,6 +76,15 @@
       },
 	  "minLength": 1
     },
+	"Reseller Region": {
+      "type": "string",
+    "allowedValues": [
+      "US",
+      "EUROPE",
+      "CANADA"
+    ]
+    }, 
+
 	"notificationEmails": {
       "type": "String",
       "metadata": {
@@ -232,34 +241,6 @@
               "type": "SQLServer"
             }
           }
-        },
-		{
-		  "apiVersion": "2015-08-01",
-		  "type": "config",
-          "name": "appsettings",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]"
-          ],
-          "tags": {
-            "displayName": "WebAppSettings"
-          },
-          "properties": {
-            "key1": "[concat(variables('sqlserverName'),'.database.windows.net')]",
-            "key2": "[concat(variables('administratorLogin'),'@',variables('sqlserverName'))]",
-			"key3": "[parameters('SQL Password')]",
-			"key4": "[parameters('siteName')]",
-			"key5": "[parameters('applicationId')]",
-			"key6": "[parameters('applicationPasscode')]",
-			"key7": "[parameters('allowedResellers')]",
-			"key8": "[parameters('clientId')]",
-			"key9": "[parameters('clientSecret')]",
-			"key10": "[parameters('resellerId')]",
-			"key11": "[parameters('SOIN')]",
-			"key12": "[parameters('resellerName')]",
-			"key13": "[parameters('notificationEmails')]",
-			"key14": "[parameters('notificationEmailFrom')]",
-			"key15": "[parameters('notificationEmailPassword')]"
-          }
         },	
 		{
           "apiVersion": "2015-08-01",
@@ -271,11 +252,36 @@
           "properties": {
             "RepoUrl": "[parameters('repoURL')]",
             "branch": "[parameters('branch')]",
-			
             "IsManualIntegration": true
           }
-        }
-        	
+        },
+		{
+		  "apiVersion": "2015-08-01",
+		  "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('webSiteName'))]"
+          ],
+          "properties": {
+            "key1": "[concat(variables('sqlserverName'),'.database.windows.net')]",
+            "key2": "[concat(variables('administratorLogin'),'@',variables('sqlserverName'))]",
+			"key3": "[parameters('SQL Password')]",
+			"key4": "[parameters('siteName')]",
+			"key5": "[parameters('applicationId')]",
+			"key6": "[parameters('application Password')]",
+			"key7": "[parameters('allowedResellers')]",
+			"key8": "[parameters('clientId (Password)')]",
+			"key9": "[parameters('client Secret (Password)')]",
+			"key10": "[parameters('resellerId')]",
+			"key11": "[parameters('SOIN (Password)')]",
+			"key12": "[parameters('resellerName')]",
+			"key13": "[parameters('notificationEmails')]",
+			"key14": "[parameters('notificationEmailFrom')]",
+			"key15": "[parameters('notificationEmailPassword')]",
+			"key16": "[parameters('Reseller Region')]",
+			"APP_Client":"[parameters('Reseller Region')]"
+          }
+        }        
       ]
 	  
     }

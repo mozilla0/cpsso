@@ -57,10 +57,22 @@
                     return data;
                 });
 
+            },
+            initUnitPrice : function(orderDetail){
+                return $http.post(BASE_URL + 'order/getUnitPrice',orderDetail).then(function(data){
+                    return data;
+                });
+            },
+            isUserAuthorizeToIncreaseSeat: function (orderLine, ordernumber, originalQuantity) {
+                return $http.post(BASE_URL + 'order/isUserAuthorizeToIncreaseSeat', { 'orderLine': orderLine, 'ordernumber': ordernumber, 'originalQuantity': originalQuantity }).then(function (data) {
+                    return data;
+                })
+            },
+            updateSeatCountForDay: function (orderLine, ordernumber, originalQuantity) {
+                return $http.post(BASE_URL + 'order/updateSeatCountForDay', { 'orderLine': orderLine, 'ordernumber': ordernumber, 'originalQuantity': originalQuantity }).then(function (data) {
+                    return data;
+                });
             }
-
-
-
         };
     };
 })();
