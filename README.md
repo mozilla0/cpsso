@@ -70,5 +70,5 @@
    <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 -->
-<a class="github-button" href="https://github.com/techdata-cloudautomation/cpssoqa/blob/master/Deploy%20Script/cpssodeploy.zip?raw=true" data-icon="octicon-cloud-download" aria-label="Download ntkme/github-buttons on GitHub">Download Installation Script</a>
+<a class="github-button" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/Deploy%20Script/cpssodeploy.zip?raw=true" data-icon="octicon-cloud-download" aria-label="Download ntkme/github-buttons on GitHub">Download Installation Script</a>
 
