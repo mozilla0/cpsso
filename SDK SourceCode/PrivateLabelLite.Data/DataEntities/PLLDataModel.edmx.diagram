@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5333c82cd0624aae8ae566d4e451c47c" Name="Diagram1" DisplayType="true">
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.Company" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.Configs" Width="1.5" PointX="5.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.Enduser" Width="1.5" PointX="3" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.CompanyOrder" PointX="3" PointY="3.625" Width="1.5" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.SiteContent" Width="1.5" PointX="5.75" PointY="5.375" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.Product" Width="1.5" PointX="5.75" PointY="8.375" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.OrderHeader" Width="1.5" PointX="0.75" PointY="3.875" />
+        <AssociationConnector Association="PrivateLabelLiteModel.FK_CompanyOrder_Company" />
+        <AssociationConnector Association="PrivateLabelLiteModel.FK_Enduser_Company" />
+        <AssociationConnector Association="PrivateLabelLiteModel.FK_CompanyOrder_OrderHeader" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.SubscriptionSummaryDetail" Width="2.875" PointX="7.75" PointY="2.375" />
+        <EntityTypeShape EntityType="PrivateLabelLiteModel.OrderLine" Width="1.5" PointX="3" PointY="7.25" />
+        <AssociationConnector Association="PrivateLabelLiteModel.FK_OrderLine_OrderHeader" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

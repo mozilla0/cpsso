@@ -1,4 +1,5 @@
-<p><strong><img src="https://raw.githubusercontent.com/techdata-cloudautomation/cpsso/master/Marketing/1.JPG" alt="Customer Portal SDK - StreamOne" width="990" height="247" /></strong></p>
+
+<p><strong><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/GithubBanner.JPG" alt="Customer Portal SDK - StreamOne" width="990" height="380" /></strong></p>
 <p><strong>What is &ldquo;Customer Portal SDK &ndash; StreamOne&rdquo;?</strong><br />Customer Portal Software Development Kit (SDK) &ndash; StreamOne, is a subscription management web application that allows both customers and end users to update their Microsoft CSP subscriptions.<br /><br />There are two user levels:<br />&bull; The end user portal allows them to modify seat quantity and view log history<br />&bull; The customer portal allows you to manage users, modify seat quantity and view log history</p>
 <p><img src="https://raw.githubusercontent.com/techdata-cloudautomation/cpsso/master/Marketing/2.JPG" alt="" width="990" height="283" /></p>
 <p><strong>What are the key benefits?</strong><br />Firstly, it is very easy to use and there is no need to log into StreamOne. In StreamOne only administrators are able to manage users and modify seats. In Customer Portal SDK &ndash; StreamOne any approved users from your organization<br />can manage users and modify seats, 24/7 on any device. Most importantly, your customers can also be given access to the app to modify seat quantity so you no longer need to be involved in the process, saving you time and money. Lastly changes are effective in seconds at the click of a button within the app. With the web app you can manage multiple user access and also view the history of any<br />license changes.</p>
@@ -6,19 +7,19 @@
 <p><strong>When will it be available?</strong><br />Customer Portal SDK &ndash; StreamOne is available now.</p>
 <p><strong>Who will it be available to?</strong><br />It is available to all customers that have basic Azure knowledge and an Azure account.</p>
 <p><strong>What does Customer Portal SDK - StreamOne look like?</strong><br />It looks great! It has a very simple and modern looking Graphical User Interface (GUI).</p>
-<p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/7.JPG?raw=true" alt="" width="770" height="303" /></p>
+<p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/9_Customer%20Portal%20SDK%20View.JPG?raw=true" alt="" width="770" height="410" /></p>
 <p><strong>What are the customer pre-requisites?</strong><br />&bull; Reseller agreement<br />&bull; Partner API credentials<br />&bull; Azure account<br />&bull; Microsoft account for login<br />&bull; Partner resources to maintain it on Azure (estimate monthly cost ~USD50.00)</p>
 <p><strong>How to get onboarded?</strong><br />Contact SCM Customer Integrations Team according of your region:</p>
 <p><strong>EUROPE</strong><br /><a href="mailto:EU.TDCloud@Techdata.com">EU.TDCloud@Techdata.com</a><br /><strong>US</strong><br /><a href="mailto:PartnerApi@Techdata.com">PartnerApi@Techdata.com</a><br /><strong>CANADA</strong><br /><a href="mailto:StreamOne@Techdata.ca">StreamOne@Techdata.ca</a></p>
-<p><strong>Summary - Deployment using Github and ARM</strong><br />We have accomplished the automation of 90% of the deployment of this SDK application. Tech Data Business Partners with the most Azue knowledge will be able to self-deploy the app. The first step and last step are manual and the average time for the whole process is around 4 minutes;</p>
+<p><strong>Summary - Deployment using Github and Powershell Script</strong><br />We have accomplished the automation of 90% of the deployment of this SDK application. Tech Data Business Partners with the most Azue knowledge will be able to self-deploy the app. The first step and last step are manual and the average time for the whole process is around 4 minutes;</p>
 <ol>
 <li>Manual - Application creation</li>
 <li>Auto - Deployment</li>
 <li>Manual - Update app site name selected during deployment</li>
 </ol>
-<p><strong>Auto Deployment Information</strong><br />The project utilizes GitHub public repository to host the application, as well as ARM (Azure Resource Management).&nbsp;It includes the "Deploy to Azure" button that allows you to launch the installation. It also contains files that perform the post-deployment actions that&nbsp; customize the database. The deployment includes the Azure templates, database scripts, the deployment code for the application, and support material. Azure copies all of the files from Github to the web app during the deployment process. For further details on how to deploy the application please read the file AutoDeploy. Customer Portal SDK StreamOne.</p>
+<p><strong>Auto Deployment Information</strong><br />The project utilizes GitHub public repository to host the application, as well as Powershell Deployment Script.&nbsp;It includes the "Download Installation Script" button that allows you to launch the installation. It also contains files that perform the post-deployment actions that&nbsp; customize the database. The deployment includes the Azure templates, database scripts, the deployment code for the application, and support material. Azure copies all of the files from Github to the web app during the deployment process. For further details on how to deploy the application please read the file AutoDeploy. Customer Portal SDK StreamOne.</p>
 <p><strong>IMPORTANT</strong><br />Before you proceed make sure you have read the Auto Deployment document and make sure you have all the necessary information for the input fields in the installation form:</p>
-<p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/8.jpg?raw=true" alt="" width="645" height="772" /></p>
+<!--<p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/8.jpg?raw=true" alt="" width="645" height="772" /></p>-->
 <ul>
 <li><strong>Directory</strong>&nbsp;&ndash; This defaults to the Microsoft Azure Directory tied to the login account. If this isn&rsquo;t the correct directory, close all browser windows and start over at step #1.&nbsp;</li>
 <li><strong>Subscription&nbsp;</strong>&ndash; This defaults to an Azure subscription tied to the login account. If needed, click the dropdown and select the desired subscription.</li>
@@ -43,9 +44,10 @@
 <p>&nbsp;<strong>Support Documents</strong></p>
 <p>Support Documents are to be found in the root of the application</p>
 <ul>
-<li><a title="Auto Deployment Technical Doc SDK.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Auto%20Deployment%20Technical%20Doc%20SDK.pdf">Auto Deployment Technical Doc SDK.pdf</a></li>
-<li><a title="User Manual Customer Portal SDK StreamOne 1.4 Overview.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/User%20Manual%20Customer%20Portal%20SDK%20StreamOne%201.%204%20Overview.pdf">User Manual Customer Portal SDK StreamOne 1.4 Overview.pdf</a></li>
-<li><a title="Manual Deployment Technical Doc SDK.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Manual%20Deployment%20Technical%20Doc%20SDK.pdf">Manual Deployment Technical Doc SDK.pdf</a></li>
+<li><a title="Customer Portal SDK Deplyment Document.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Customer%20Portal%20SDK%20StreamOne%20Deplyment%20Doc.pdf">Customer Portal SDK Deplyment Document.pdf</a></li>
+<li><a title="User Manual Customer Portal SDK StreamOne 1.4.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/User%20Manual%20Customer%20Portal%20SDK%20StreamOne%201.4.pdf">User Manual Customer Portal SDK StreamOne 1.4.pdf</a></li>
+<li><a title="Import Source Code To Visual Studio.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Import%20Source%20Code%20To%20Visual%20Studio.pdf">Import Source Code To Visual Studio.pdf</a></li>
+<li><a title="Customer Portal SDK Manual Deployment Document.pdf" href="https://github.com/techdata-cloudautomation/cpsso/blob/master/SupportDocs/Manual%20Deployment%20Technical%20Doc%20SDK.pdf">Customer Portal SDK Manual Deployment Document.pdf</a></li>
 </ul>
 <p><strong>Support</strong></p>
 <p>What is the process for addressing issues that arise?</p>
@@ -64,8 +66,9 @@
 <p><strong>EUROPE</strong><br /> <a href="mailto:EU.API.Support@TechData.com">EU.API.Support@TechData.com</a><br /> <strong>US</strong><br /><a href="mailto:PartnerApi@Techdata.com">PartnerApi@Techdata.com</a><br /> <strong>CANADA</strong><br /><a href="mailto:StreamOne@Techdata.ca">StreamOne@Techdata.ca</a></p>
 <p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/6.jpg?raw=true" alt="" width="700" height="431" /></p>
 <p><strong>Installation Deployment</strong></p>
-<a href="https://azuredeploy.net/" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
+<!--<a href="https://azuredeploy.net/" target="_blank">
+   <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-
+-->
+<a class="github-button" href="https://github.com/techdata-cloudautomation/cpssoqa/blob/master/Deploy%20Script/cpssodeploy.zip?raw=true" data-icon="octicon-cloud-download" aria-label="Download ntkme/github-buttons on GitHub">Download Installation Script</a>
 

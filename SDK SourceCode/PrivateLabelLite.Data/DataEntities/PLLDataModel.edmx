@@ -1,0 +1,1061 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PrivateLabelLiteModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="CompanyId" />
+          </Key>
+          <Property Name="CompanyId" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Created" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="250" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CompanyOrder">
+          <Key>
+            <PropertyRef Name="RecordId" />
+          </Key>
+          <Property Name="RecordId" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompanyId" Type="numeric" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="SalesOrderId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Configs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Key" Type="nvarchar(max)" />
+          <Property Name="Value" Type="nvarchar(max)" />
+          <Property Name="Type" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Enduser">
+          <Key>
+            <PropertyRef Name="EnduserId" />
+          </Key>
+          <Property Name="EnduserId" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SAPEnduserId" Type="uniqueidentifier" />
+          <Property Name="CompanyId" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="Created" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="255" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderHeader">
+          <Key>
+            <PropertyRef Name="OrderNumber" />
+          </Key>
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OrderDate" Type="datetime" />
+          <Property Name="OrderType" Type="nvarchar" MaxLength="50" />
+          <Property Name="EndUserName" Type="nvarchar" MaxLength="100" />
+          <Property Name="EndUserEmail" Type="nvarchar" MaxLength="100" />
+          <Property Name="TotalSalesPrice" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="Domain" Type="nvarchar" MaxLength="100" />
+          <Property Name="CurrencySymbol" Type="nvarchar" MaxLength="10" />
+          <Property Name="CurrencyCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="LastUpdated" Type="datetime" />
+          <Property Name="OrderJson" Type="nvarchar(max)" />
+          <Property Name="PONumber" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="OrderLine">
+          <Key>
+            <PropertyRef Name="OrderNumber" />
+            <PropertyRef Name="Sku" />
+          </Key>
+          <Property Name="LineId" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SkuName" Type="nvarchar" MaxLength="200" />
+          <Property Name="ManufacturerPartNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="UnitPrice" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="Quantity" Type="nvarchar" MaxLength="50" />
+          <Property Name="LineStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrencySymbol" Type="nvarchar" MaxLength="10" />
+          <Property Name="CurrencyCode" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Sku" />
+          </Key>
+          <Property Name="Id" Type="numeric" Precision="18" Scale="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SkuName" Type="nvarchar" MaxLength="200" />
+          <Property Name="ManufacturerPartNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Article" Type="nvarchar" MaxLength="50" />
+          <Property Name="VendorMapId" Type="nvarchar" MaxLength="100" />
+          <Property Name="ProductType" Type="nvarchar" MaxLength="50" />
+          <Property Name="QtyMin" Type="int" />
+          <Property Name="QtyMax" Type="int" />
+          <Property Name="LastUpdated" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PrivateLabelLite.dbo.SiteContent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SiteContent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Key" Type="nvarchar" MaxLength="100" />
+          <Property Name="Value" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SubscriptionSummaryDetail">
+          <Key>
+            <PropertyRef Name="SubscriptionId" />
+          </Key>
+          <Property Name="OrderNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="VendorId" Type="nvarchar" MaxLength="50" />
+          <Property Name="VendorName" Type="nvarchar" MaxLength="50" />
+          <Property Name="SKU" Type="nvarchar" MaxLength="50" />
+          <Property Name="SkuName" Type="nvarchar(max)" />
+          <Property Name="Quantity" Type="nvarchar" MaxLength="50" />
+          <Property Name="Article" Type="nvarchar" MaxLength="50" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="50" />
+          <Property Name="EndCustomerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="EndCustomerEmail" Type="nvarchar" MaxLength="50" />
+          <Property Name="Company" Type="nvarchar" MaxLength="50" />
+          <Property Name="OrderSource" Type="nvarchar" MaxLength="50" />
+          <Property Name="UnitPrice" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrencySymbol" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrencyCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="LineStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="Domain" Type="nvarchar" MaxLength="50" />
+          <Property Name="MsSubscriptionId" Type="nvarchar" MaxLength="50" />
+          <Property Name="MicrosoftId" Type="nvarchar" MaxLength="50" />
+          <Property Name="SubscriptionHistoryJson" Type="nvarchar(max)" />
+          <Property Name="SubscriptionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="MappingStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="MarkUpPercentage" Type="float" />
+          <Property Name="SalesPrice" Type="float" />
+          <Property Name="SeatLimit" Type="float" />
+          <Property Name="TaxStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="SeatLimitStartTime" Type="datetime" />
+          <Property Name="SeatLimitEndTime" Type="datetime" />
+          <Property Name="SeatCounter" Type="int" />
+          <Property Name="TemporarySeatLimit" Type="float" />
+        </EntityType>
+        <Association Name="FK_CompanyOrder_Company">
+          <End Role="Company" Type="Self.Company" Multiplicity="1" />
+          <End Role="CompanyOrder" Type="Self.CompanyOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="CompanyId" />
+            </Principal>
+            <Dependent Role="CompanyOrder">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyOrder_OrderHeader">
+          <End Role="OrderHeader" Type="Self.OrderHeader" Multiplicity="1" />
+          <End Role="CompanyOrder" Type="Self.CompanyOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderHeader">
+              <PropertyRef Name="OrderNumber" />
+            </Principal>
+            <Dependent Role="CompanyOrder">
+              <PropertyRef Name="SalesOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Enduser_Company">
+          <End Role="Company" Type="Self.Company" Multiplicity="0..1" />
+          <End Role="Enduser" Type="Self.Enduser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="CompanyId" />
+            </Principal>
+            <Dependent Role="Enduser">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderLine_OrderHeader">
+          <End Role="OrderHeader" Type="Self.OrderHeader" Multiplicity="1" />
+          <End Role="OrderLine" Type="Self.OrderLine" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderHeader">
+              <PropertyRef Name="OrderNumber" />
+            </Principal>
+            <Dependent Role="OrderLine">
+              <PropertyRef Name="OrderNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="procGetCompanySalesOrders" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CompanyId" Type="numeric" Mode="In" />
+          <Parameter Name="EndUser" Type="nvarchar" Mode="In" />
+          <Parameter Name="SalesOrderNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="rowCount" Type="int" Mode="In" />
+          <Parameter Name="Pageno" Type="int" Mode="In" />
+        </Function>
+        <Function Name="procGetSubscriptionSummary" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PageSize" Type="int" Mode="In" />
+          <Parameter Name="PageNum" Type="int" Mode="In" />
+          <Parameter Name="CompanyName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Domain" Type="nvarchar" Mode="In" />
+          <Parameter Name="ProductName" Type="nvarchar" Mode="In" />
+          <Parameter Name="ResellerPO" Type="nvarchar" Mode="In" />
+          <Parameter Name="OrderNumber" Type="nvarchar" Mode="In" />
+          <Parameter Name="EditProductStatus" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="procGetUsers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="numeric" Mode="In" />
+          <Parameter Name="UserName" Type="nvarchar" Mode="In" />
+          <Parameter Name="CompanyName" Type="nvarchar" Mode="In" />
+          <Parameter Name="rowCount" Type="int" Mode="In" />
+          <Parameter Name="pageNo" Type="int" Mode="In" />
+          <Parameter Name="orderBy" Type="nvarchar" Mode="In" />
+          <Parameter Name="CompanyId" Type="numeric" Mode="In" />
+        </Function>
+        <Function Name="procGetUserSubscriptions" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PageSize" Type="int" Mode="In" />
+          <Parameter Name="PageNum" Type="int" Mode="In" />
+          <Parameter Name="EndUserEmail" Type="nvarchar" Mode="In" />
+          <Parameter Name="EndUserName" Type="nvarchar" Mode="In" />
+          <Parameter Name="ProductName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="procInsertIntoLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="message" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="ErrorCode" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Result" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Key" Type="int" Mode="In" />
+          <Parameter Name="IsSuccess" Type="bit" Mode="In" />
+          <Parameter Name="IsValid" Type="bit" Mode="In" />
+          <Parameter Name="TimeStamp" Type="datetime" Mode="In" />
+          <Parameter Name="Browser" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="CurrentExecutionFilePath" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="RequestType" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="UserHostAddress" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="UserHostName" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="procIsUserAuthorizeToIncreaseSeat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Quantity" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="SKU" Type="nvarchar" Mode="In" />
+          <Parameter Name="SeatCounter" Type="int" Mode="In" />
+          <Parameter Name="OrderNumber" Type="nvarchar" Mode="In" />
+          <Parameter Name="OriginalQuantity" Type="int" Mode="In" />
+        </Function>
+        <Function Name="procXmlDeleteCompanyOrderMapping" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="recordIds" Type="xml" Mode="In" />
+        </Function>
+        <Function Name="procXmlGetOrders" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="IsAdmin" Type="bit" Mode="In" />
+          <Parameter Name="UserEmailId" Type="nvarchar" Mode="In" />
+          <Parameter Name="OrderNumber" Type="nvarchar" Mode="In" />
+          <Parameter Name="UserName" Type="nvarchar" Mode="In" />
+          <Parameter Name="SkuName" Type="nvarchar" Mode="In" />
+          <Parameter Name="rowCount" Type="int" Mode="In" />
+          <Parameter Name="Pageno" Type="int" Mode="In" />
+          <Parameter Name="CompanyName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="procXmlInsertCompanies" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Companies" Type="xml" Mode="In" />
+          <Parameter Name="CreatedBy" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="procXmlRemoveEndUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="customerIds" Type="xml" Mode="In" />
+        </Function>
+        <Function Name="procXmlUpsertProducts" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Products" Type="xml" Mode="In" />
+        </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="PrivateLabelLiteModelStoreContainer">
+          <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CompanyOrder" EntityType="Self.CompanyOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Configs" EntityType="Self.Configs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Enduser" EntityType="Self.Enduser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderHeader" EntityType="Self.OrderHeader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderLine" EntityType="Self.OrderLine" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SubscriptionSummaryDetail" EntityType="Self.SubscriptionSummaryDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiteContent" EntityType="Self.SiteContent" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SiteContent].[Id] AS [Id], 
+    [SiteContent].[Key] AS [Key], 
+    [SiteContent].[Value] AS [Value]
+    FROM [dbo].[SiteContent] AS [SiteContent]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_CompanyOrder_Company" Association="Self.FK_CompanyOrder_Company">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="CompanyOrder" EntitySet="CompanyOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyOrder_OrderHeader" Association="Self.FK_CompanyOrder_OrderHeader">
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+            <End Role="CompanyOrder" EntitySet="CompanyOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Enduser_Company" Association="Self.FK_Enduser_Company">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="Enduser" EntitySet="Enduser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderLine_OrderHeader" Association="Self.FK_OrderLine_OrderHeader">
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+            <End Role="OrderLine" EntitySet="OrderLine" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PrivateLabelLiteModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="CompanyId" />
+          </Key>
+          <Property Name="CompanyId" Type="Decimal" Precision="18" Scale="0" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CompanyOrder" Relationship="PrivateLabelLiteModel.FK_CompanyOrder_Company" FromRole="Company" ToRole="CompanyOrder" />
+          <NavigationProperty Name="Enduser" Relationship="PrivateLabelLiteModel.FK_Enduser_Company" FromRole="Company" ToRole="Enduser" />
+        </EntityType>
+        <EntityType Name="Configs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Key" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Enduser">
+          <Key>
+            <PropertyRef Name="EnduserId" />
+          </Key>
+          <Property Name="EnduserId" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+          <Property Name="SAPEnduserId" Type="Guid" />
+          <Property Name="CompanyId" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Created" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Company" Relationship="PrivateLabelLiteModel.FK_Enduser_Company" FromRole="Enduser" ToRole="Company" />
+        </EntityType>
+        <EntityContainer Name="PrivateLabelLiteDataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Company" EntityType="Self.Company" />
+          <EntitySet Name="Configs" EntityType="Self.Configs" />
+          <EntitySet Name="Enduser" EntityType="Self.Enduser" />
+          <FunctionImport Name="procGetUsers" ReturnType="Collection(PrivateLabelLiteModel.procGetUsers_Result)">
+            <Parameter Name="Id" Mode="In" Type="Decimal" />
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="CompanyName" Mode="In" Type="String" />
+            <Parameter Name="rowCount" Mode="In" Type="Int32" />
+            <Parameter Name="pageNo" Mode="In" Type="Int32" />
+            <Parameter Name="orderBy" Mode="In" Type="String" />
+            <Parameter Name="CompanyId" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="procGetCompanySalesOrders" ReturnType="Collection(PrivateLabelLiteModel.procGetCompanySalesOrders_Result)">
+            <Parameter Name="CompanyId" Mode="In" Type="Decimal" />
+            <Parameter Name="EndUser" Mode="In" Type="String" />
+            <Parameter Name="SalesOrderNo" Mode="In" Type="String" />
+            <Parameter Name="rowCount" Mode="In" Type="Int32" />
+            <Parameter Name="Pageno" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="CompanyOrder" EntityType="PrivateLabelLiteModel.CompanyOrder" />
+          <EntitySet Name="SiteContent" EntityType="PrivateLabelLiteModel.SiteContent" />
+          <FunctionImport Name="procXmlGetOrders" ReturnType="Collection(PrivateLabelLiteModel.procXmlGetOrders_Result)">
+            <Parameter Name="IsAdmin" Mode="In" Type="Boolean" />
+            <Parameter Name="UserEmailId" Mode="In" Type="String" />
+            <Parameter Name="OrderNumber" Mode="In" Type="String" />
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="SkuName" Mode="In" Type="String" />
+            <Parameter Name="rowCount" Mode="In" Type="Int32" />
+            <Parameter Name="Pageno" Mode="In" Type="Int32" />
+            <Parameter Name="CompanyName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="procXmlUpsertProducts">
+          <Parameter Name="Products" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Product" EntityType="PrivateLabelLiteModel.Product" />
+          <EntitySet Name="OrderHeader" EntityType="PrivateLabelLiteModel.OrderHeader" />
+          <FunctionImport Name="procXmlInsertCompanies">
+            <Parameter Name="Companies" Mode="In" Type="String" />
+            <Parameter Name="CreatedBy" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="procXmlRemoveEndUser">
+          <Parameter Name="customerIds" Mode="In" Type="String" />
+          </FunctionImport>
+          <AssociationSet Name="FK_CompanyOrder_Company" Association="PrivateLabelLiteModel.FK_CompanyOrder_Company">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="CompanyOrder" EntitySet="CompanyOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Enduser_Company" Association="PrivateLabelLiteModel.FK_Enduser_Company">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="Enduser" EntitySet="Enduser" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CompanyOrder_OrderHeader" Association="PrivateLabelLiteModel.FK_CompanyOrder_OrderHeader">
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+            <End Role="CompanyOrder" EntitySet="CompanyOrder" />
+          </AssociationSet>
+          <FunctionImport Name="procXmlDeleteCompanyOrderMapping">
+          <Parameter Name="recordIds" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(PrivateLabelLiteModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(PrivateLabelLiteModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="SubscriptionSummaryDetail" EntityType="PrivateLabelLiteModel.SubscriptionSummaryDetail" />
+          <FunctionImport Name="procGetUserSubscriptions" ReturnType="Collection(PrivateLabelLiteModel.procGetUserSubscriptions_Result)">
+            <Parameter Name="PageSize" Mode="In" Type="Int32" />
+            <Parameter Name="PageNum" Mode="In" Type="Int32" />
+            <Parameter Name="EndUserEmail" Mode="In" Type="String" />
+            <Parameter Name="EndUserName" Mode="In" Type="String" />
+            <Parameter Name="ProductName" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="OrderLine" EntityType="PrivateLabelLiteModel.OrderLine" />
+          <AssociationSet Name="FK_OrderLine_OrderHeader" Association="PrivateLabelLiteModel.FK_OrderLine_OrderHeader">
+            <End Role="OrderHeader" EntitySet="OrderHeader" />
+            <End Role="OrderLine" EntitySet="OrderLine" />
+          </AssociationSet>
+          <FunctionImport Name="procInsertIntoLogs">
+            <Parameter Name="message" Mode="In" Type="String" />
+            <Parameter Name="ErrorCode" Mode="In" Type="String" />
+            <Parameter Name="Result" Mode="In" Type="String" />
+            <Parameter Name="Key" Mode="In" Type="Int32" />
+            <Parameter Name="IsSuccess" Mode="In" Type="Boolean" />
+            <Parameter Name="IsValid" Mode="In" Type="Boolean" />
+            <Parameter Name="TimeStamp" Mode="In" Type="DateTime" />
+            <Parameter Name="Browser" Mode="In" Type="String" />
+            <Parameter Name="CurrentExecutionFilePath" Mode="In" Type="String" />
+            <Parameter Name="RequestType" Mode="In" Type="String" />
+            <Parameter Name="UserHostAddress" Mode="In" Type="String" />
+            <Parameter Name="UserHostName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="procGetSubscriptionSummary" ReturnType="Collection(PrivateLabelLiteModel.procGetSubscriptionSummary_Result)">
+            <Parameter Name="PageSize" Mode="In" Type="Int32" />
+            <Parameter Name="PageNum" Mode="In" Type="Int32" />
+            <Parameter Name="CompanyName" Mode="In" Type="String" />
+            <Parameter Name="Domain" Mode="In" Type="String" />
+            <Parameter Name="ProductName" Mode="In" Type="String" />
+            <Parameter Name="ResellerPO" Mode="In" Type="String" />
+            <Parameter Name="OrderNumber" Mode="In" Type="String" />
+            <Parameter Name="EditProductStatus" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="procIsUserAuthorizeToIncreaseSeat" ReturnType="Collection(Boolean)">
+            <Parameter Name="Quantity" Mode="In" Type="String" />
+            <Parameter Name="SKU" Mode="In" Type="String" />
+            <Parameter Name="SeatCounter" Mode="In" Type="Int32" />
+            <Parameter Name="OrderNumber" Mode="In" Type="String" />
+            <Parameter Name="OriginalQuantity" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="procGetUsers_Result">
+          <Property Type="Int64" Name="Row" Nullable="true" />
+          <Property Type="Decimal" Name="EnduserId" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="String" Name="EndUserName" Nullable="false" MaxLength="255" />
+          <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="255" />
+          <Property Type="String" Name="Email" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="TotalRecords" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="procGetCompanySalesOrders_Result">
+          <Property Type="Int64" Name="Row" Nullable="true" />
+          <Property Type="String" Name="CompanyName" Nullable="true" MaxLength="255" />
+          <Property Type="Decimal" Name="CompanyId" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="String" Name="SalesOrderId" Nullable="false" MaxLength="50" />
+          <Property Type="Decimal" Name="RecordId" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="DateTime" Name="Created" Nullable="true" Precision="23" />
+          <Property Type="String" Name="CreatedBy" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="TotalRecords" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="CompanyOrder">
+          <Key>
+            <PropertyRef Name="RecordId" />
+          </Key>
+          <Property Name="CompanyId" Nullable="false" Precision="18" Scale="0" Type="Decimal" />
+          <Property Name="RecordId" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" Type="Decimal" />
+          <Property Name="Created" Precision="3" Type="DateTime" />
+          <Property Name="CreatedBy" MaxLength="100" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="SalesOrderId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <NavigationProperty Name="Company" Relationship="PrivateLabelLiteModel.FK_CompanyOrder_Company" FromRole="CompanyOrder" ToRole="Company" />
+          <NavigationProperty Name="OrderHeader" Relationship="PrivateLabelLiteModel.FK_CompanyOrder_OrderHeader" FromRole="CompanyOrder" ToRole="OrderHeader" />
+        </EntityType>
+        <EntityType Name="SiteContent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Key" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <ComplexType Name="procXmlGetOrders_Result">
+          <Property Type="Int64" Name="Row" Nullable="true" />
+          <Property Type="String" Name="OrderNumber" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="OrderType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Domain" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="EndUserName" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="EndUserEmail" Nullable="true" MaxLength="100" />
+          <Property Type="Decimal" Name="TotalSalesPrice" Nullable="true" Precision="18" Scale="2" />
+          <Property Type="String" Name="CurrencySymbol" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="CurrencyCode" Nullable="true" MaxLength="10" />
+          <Property Type="Int32" Name="TotalRecords" Nullable="true" />
+          <Property Type="String" Name="OrderLines" Nullable="true" MaxLength="Max" />
+          <Property Type="Decimal" Name="CompanyId" Nullable="false" Precision="18" Scale="0" />
+          <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="255" />
+        </ComplexType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Sku" />
+          </Key>
+          <Property Name="Id" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sku" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SkuName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ManufacturerPartNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Article" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VendorMapId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ProductType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="QtyMin" Type="Int32" />
+          <Property Name="QtyMax" Type="Int32" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OrderHeader">
+          <Key>
+            <PropertyRef Name="OrderNumber" />
+          </Key>
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrderDate" Type="DateTime" Precision="3" />
+          <Property Name="OrderType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EndUserName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EndUserEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TotalSalesPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Domain" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencySymbol" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+          <Property Name="OrderJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CompanyOrder" Relationship="PrivateLabelLiteModel.FK_CompanyOrder_OrderHeader" FromRole="OrderHeader" ToRole="CompanyOrder" />
+          <Property Name="PONumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OrderLine" Relationship="PrivateLabelLiteModel.FK_OrderLine_OrderHeader" FromRole="OrderHeader" ToRole="OrderLine" />
+        </EntityType>
+        <Association Name="FK_CompanyOrder_Company">
+          <End Type="PrivateLabelLiteModel.Company" Role="Company" Multiplicity="1" />
+          <End Type="PrivateLabelLiteModel.CompanyOrder" Role="CompanyOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="CompanyId" />
+            </Principal>
+            <Dependent Role="CompanyOrder">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Enduser_Company">
+          <End Type="PrivateLabelLiteModel.Company" Role="Company" Multiplicity="0..1" />
+          <End Type="PrivateLabelLiteModel.Enduser" Role="Enduser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="CompanyId" />
+            </Principal>
+            <Dependent Role="Enduser">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CompanyOrder_OrderHeader">
+          <End Type="PrivateLabelLiteModel.OrderHeader" Role="OrderHeader" Multiplicity="1" />
+          <End Type="PrivateLabelLiteModel.CompanyOrder" Role="CompanyOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderHeader">
+              <PropertyRef Name="OrderNumber" />
+            </Principal>
+            <Dependent Role="CompanyOrder">
+              <PropertyRef Name="SalesOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="SubscriptionSummaryDetail">
+          <Key>
+            <PropertyRef Name="SubscriptionId" />
+          </Key>
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VendorId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VendorName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SKU" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SkuName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Article" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EndCustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EndCustomerEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Company" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrderSource" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UnitPrice" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencySymbol" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="LineStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Domain" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MsSubscriptionId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MicrosoftId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SubscriptionHistoryJson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SubscriptionId" Type="Guid" Nullable="false" />
+          <Property Name="MappingStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesPrice" Type="Double" />
+          <Property Name="MarkUpPercentage" Type="Double" />
+          <Property Name="SeatLimit" Type="Double" />
+          <Property Name="TaxStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SeatLimitStartTime" Type="DateTime" Precision="3" />
+          <Property Name="SeatLimitEndTime" Type="DateTime" Precision="3" />
+          <Property Name="SeatCounter" Type="Int32" />
+          <Property Name="TemporarySeatLimit" Type="Double" />
+        </EntityType>
+        <ComplexType Name="procGetUserSubscriptions_Result">
+          <Property Type="String" Name="Domain" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OrderNumber" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="SkuName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Quantity" Nullable="false" MaxLength="50" />
+          <Property Type="Guid" Name="SubscriptionId" Nullable="false" />
+          <Property Type="String" Name="Company" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="MappingStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LineStatus" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="PONumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="MaxRows" Nullable="true" />
+          <Property Type="String" Name="UnitPrice" Nullable="true" MaxLength="50" />
+          <Property Type="Double" Name="MarkUpPercentage" Nullable="true" />
+          <Property Type="Double" Name="SeatLimit" Nullable="false" />
+          <Property Type="String" Name="TaxStatus" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="SeatLimitStartTime" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="SeatLimitEndTime" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="SeatCounter" Nullable="false" />
+          <Property Type="String" Name="CurrencySymbol" Nullable="false" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="OrderLine">
+          <Key>
+            <PropertyRef Name="OrderNumber" />
+            <PropertyRef Name="Sku" />
+          </Key>
+          <Property Name="LineId" Type="Decimal" Nullable="false" Precision="18" Scale="0" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sku" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SkuName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ManufacturerPartNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UnitPrice" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Quantity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencySymbol" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="OrderHeader" Relationship="PrivateLabelLiteModel.FK_OrderLine_OrderHeader" FromRole="OrderLine" ToRole="OrderHeader" />
+        </EntityType>
+        <Association Name="FK_OrderLine_OrderHeader">
+          <End Type="PrivateLabelLiteModel.OrderHeader" Role="OrderHeader" Multiplicity="1" />
+          <End Type="PrivateLabelLiteModel.OrderLine" Role="OrderLine" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderHeader">
+              <PropertyRef Name="OrderNumber" />
+            </Principal>
+            <Dependent Role="OrderLine">
+              <PropertyRef Name="OrderNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="procGetSubscriptionSummary_Result">
+          <Property Type="String" Name="Domain" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="OrderNumber" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="SkuName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Quantity" Nullable="false" MaxLength="50" />
+          <Property Type="Guid" Name="SubscriptionId" Nullable="false" />
+          <Property Type="String" Name="Company" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="MappingStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LineStatus" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PONumber" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="OrderDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="MaxRows" Nullable="true" />
+          <Property Type="String" Name="UnitPrice" Nullable="true" MaxLength="50" />
+          <Property Type="Double" Name="MarkUpPercentage" Nullable="true" />
+          <Property Type="Double" Name="SeatLimit" Nullable="true" />
+          <Property Type="String" Name="TaxStatus" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="SeatLimitStartTime" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="SeatLimitEndTime" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="SeatCounter" Nullable="true" />
+          <Property Type="String" Name="CurrencySymbol" Nullable="true" MaxLength="50" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PrivateLabelLiteModelStoreContainer" CdmEntityContainer="PrivateLabelLiteDataEntities">
+          <EntitySetMapping Name="Company">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.Company">
+              <MappingFragment StoreEntitySet="Company">
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Configs">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.Configs">
+              <MappingFragment StoreEntitySet="Configs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Enduser">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.Enduser">
+              <MappingFragment StoreEntitySet="Enduser">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EnduserId" ColumnName="EnduserId" />
+                <ScalarProperty Name="SAPEnduserId" ColumnName="SAPEnduserId" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="procGetUsers" FunctionName="PrivateLabelLiteModel.Store.procGetUsers">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.procGetUsers_Result">
+                <ScalarProperty Name="Row" ColumnName="Row" />
+                <ScalarProperty Name="EnduserId" ColumnName="EnduserId" />
+                <ScalarProperty Name="EndUserName" ColumnName="EndUserName" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="TotalRecords" ColumnName="TotalRecords" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="procGetCompanySalesOrders" FunctionName="PrivateLabelLiteModel.Store.procGetCompanySalesOrders">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.procGetCompanySalesOrders_Result">
+                <ScalarProperty Name="Row" ColumnName="Row" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="SalesOrderId" ColumnName="SalesOrderId" />
+                <ScalarProperty Name="RecordId" ColumnName="RecordId" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="TotalRecords" ColumnName="TotalRecords" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="CompanyOrder">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.CompanyOrder">
+              <MappingFragment StoreEntitySet="CompanyOrder">
+                <ScalarProperty Name="SalesOrderId" ColumnName="SalesOrderId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="RecordId" ColumnName="RecordId" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteContent">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.SiteContent">
+              <MappingFragment StoreEntitySet="SiteContent">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="procXmlGetOrders" FunctionName="PrivateLabelLiteModel.Store.procXmlGetOrders">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.procXmlGetOrders_Result">
+                <ScalarProperty Name="Row" ColumnName="Row" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Domain" ColumnName="Domain" />
+                <ScalarProperty Name="EndUserName" ColumnName="EndUserName" />
+                <ScalarProperty Name="EndUserEmail" ColumnName="EndUserEmail" />
+                <ScalarProperty Name="TotalSalesPrice" ColumnName="TotalSalesPrice" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="TotalRecords" ColumnName="TotalRecords" />
+                <ScalarProperty Name="OrderLines" ColumnName="OrderLines" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="procXmlUpsertProducts" FunctionName="PrivateLabelLiteModel.Store.procXmlUpsertProducts" />
+          <EntitySetMapping Name="Product">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="QtyMax" ColumnName="QtyMax" />
+                <ScalarProperty Name="QtyMin" ColumnName="QtyMin" />
+                <ScalarProperty Name="ProductType" ColumnName="ProductType" />
+                <ScalarProperty Name="VendorMapId" ColumnName="VendorMapId" />
+                <ScalarProperty Name="Article" ColumnName="Article" />
+                <ScalarProperty Name="ManufacturerPartNumber" ColumnName="ManufacturerPartNumber" />
+                <ScalarProperty Name="SkuName" ColumnName="SkuName" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderHeader">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.OrderHeader">
+              <MappingFragment StoreEntitySet="OrderHeader">
+                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
+                <ScalarProperty Name="OrderJson" ColumnName="OrderJson" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+                <ScalarProperty Name="Domain" ColumnName="Domain" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TotalSalesPrice" ColumnName="TotalSalesPrice" />
+                <ScalarProperty Name="EndUserEmail" ColumnName="EndUserEmail" />
+                <ScalarProperty Name="EndUserName" ColumnName="EndUserName" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="procXmlInsertCompanies" FunctionName="PrivateLabelLiteModel.Store.procXmlInsertCompanies" />
+          <FunctionImportMapping FunctionImportName="procXmlRemoveEndUser" FunctionName="PrivateLabelLiteModel.Store.procXmlRemoveEndUser" />
+          <FunctionImportMapping FunctionImportName="procXmlDeleteCompanyOrderMapping" FunctionName="PrivateLabelLiteModel.Store.procXmlDeleteCompanyOrderMapping" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="PrivateLabelLiteModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="PrivateLabelLiteModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="PrivateLabelLiteModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="PrivateLabelLiteModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="PrivateLabelLiteModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="PrivateLabelLiteModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="PrivateLabelLiteModel.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="SubscriptionSummaryDetail">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.SubscriptionSummaryDetail">
+              <MappingFragment StoreEntitySet="SubscriptionSummaryDetail">
+                <ScalarProperty Name="TemporarySeatLimit" ColumnName="TemporarySeatLimit" />
+                <ScalarProperty Name="SeatCounter" ColumnName="SeatCounter" />
+                <ScalarProperty Name="SeatLimitEndTime" ColumnName="SeatLimitEndTime" />
+                <ScalarProperty Name="SeatLimitStartTime" ColumnName="SeatLimitStartTime" />
+                <ScalarProperty Name="TaxStatus" ColumnName="TaxStatus" />
+                <ScalarProperty Name="SeatLimit" ColumnName="SeatLimit" />
+                <ScalarProperty Name="MarkUpPercentage" ColumnName="MarkUpPercentage" />
+                <ScalarProperty Name="SalesPrice" ColumnName="SalesPrice" />
+                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
+                <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
+                <ScalarProperty Name="SubscriptionHistoryJson" ColumnName="SubscriptionHistoryJson" />
+                <ScalarProperty Name="MicrosoftId" ColumnName="MicrosoftId" />
+                <ScalarProperty Name="MsSubscriptionId" ColumnName="MsSubscriptionId" />
+                <ScalarProperty Name="Domain" ColumnName="Domain" />
+                <ScalarProperty Name="LineStatus" ColumnName="LineStatus" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="OrderSource" ColumnName="OrderSource" />
+                <ScalarProperty Name="Company" ColumnName="Company" />
+                <ScalarProperty Name="EndCustomerEmail" ColumnName="EndCustomerEmail" />
+                <ScalarProperty Name="EndCustomerName" ColumnName="EndCustomerName" />
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="Article" ColumnName="Article" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SkuName" ColumnName="SkuName" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="VendorName" ColumnName="VendorName" />
+                <ScalarProperty Name="VendorId" ColumnName="VendorId" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="procGetUserSubscriptions" FunctionName="PrivateLabelLiteModel.Store.procGetUserSubscriptions">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.procGetUserSubscriptions_Result">
+                <ScalarProperty Name="Domain" ColumnName="Domain" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="SkuName" ColumnName="SkuName" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
+                <ScalarProperty Name="Company" ColumnName="Company" />
+                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
+                <ScalarProperty Name="LineStatus" ColumnName="LineStatus" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="MaxRows" ColumnName="MaxRows" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="MarkUpPercentage" ColumnName="MarkUpPercentage" />
+                <ScalarProperty Name="SeatLimit" ColumnName="SeatLimit" />
+                <ScalarProperty Name="TaxStatus" ColumnName="TaxStatus" />
+                <ScalarProperty Name="SeatLimitStartTime" ColumnName="SeatLimitStartTime" />
+                <ScalarProperty Name="SeatLimitEndTime" ColumnName="SeatLimitEndTime" />
+                <ScalarProperty Name="SeatCounter" ColumnName="SeatCounter" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="OrderLine">
+            <EntityTypeMapping TypeName="PrivateLabelLiteModel.OrderLine">
+              <MappingFragment StoreEntitySet="OrderLine">
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+                <ScalarProperty Name="LineStatus" ColumnName="LineStatus" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="ManufacturerPartNumber" ColumnName="ManufacturerPartNumber" />
+                <ScalarProperty Name="SkuName" ColumnName="SkuName" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="LineId" ColumnName="LineId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="procInsertIntoLogs" FunctionName="PrivateLabelLiteModel.Store.procInsertIntoLogs" />
+          <FunctionImportMapping FunctionImportName="procGetSubscriptionSummary" FunctionName="PrivateLabelLiteModel.Store.procGetSubscriptionSummary">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PrivateLabelLiteModel.procGetSubscriptionSummary_Result">
+                <ScalarProperty Name="Domain" ColumnName="Domain" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="SkuName" ColumnName="SkuName" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="SubscriptionId" ColumnName="SubscriptionId" />
+                <ScalarProperty Name="Company" ColumnName="Company" />
+                <ScalarProperty Name="MappingStatus" ColumnName="MappingStatus" />
+                <ScalarProperty Name="LineStatus" ColumnName="LineStatus" />
+                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="MaxRows" ColumnName="MaxRows" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="MarkUpPercentage" ColumnName="MarkUpPercentage" />
+                <ScalarProperty Name="SeatLimit" ColumnName="SeatLimit" />
+                <ScalarProperty Name="TaxStatus" ColumnName="TaxStatus" />
+                <ScalarProperty Name="SeatLimitStartTime" ColumnName="SeatLimitStartTime" />
+                <ScalarProperty Name="SeatLimitEndTime" ColumnName="SeatLimitEndTime" />
+                <ScalarProperty Name="SeatCounter" ColumnName="SeatCounter" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="procIsUserAuthorizeToIncreaseSeat" FunctionName="PrivateLabelLiteModel.Store.procIsUserAuthorizeToIncreaseSeat" />
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
