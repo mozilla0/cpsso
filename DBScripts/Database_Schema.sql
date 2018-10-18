@@ -25,6 +25,19 @@ if exists(select * from information_schema.tables where table_schema = N'dbo' an
 			
 			IF NOT EXISTS(SELECT 1 FROM sys.columns  WHERE Name = N'TemporarySeatLimit' AND Object_ID = Object_ID(N'dbo.subscriptionsummarydetail'))
 			alter table subscriptionsummarydetail add TemporarySeatLimit [float] NULL
+			
+			IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS  WHERE TABLE_NAME = 'SubscriptionSummaryDetail' and CONSTRAINT_NAME = 'PK_SubscriptionSummaryDetail')
+			ALTER TABLE [dbo].[SubscriptionSummaryDetail] DROP CONSTRAINT [PK_SubscriptionSummaryDetail] WITH ( ONLINE = OFF )
+			
+			IF NOT EXISTS(SELECT 1 FROM sys.columns  WHERE Name = N'tblSubsId' AND Object_ID = Object_ID(N'dbo.subscriptionsummarydetail'))
+			ALTER TABLE [dbo].[SubscriptionSummaryDetail] ADD [tblSubsId]  int NOT NULL identity(1,1) 
+
+			/****** Object:  Index [PK_SubscriptionSummaryDetail]    Script Date: 10/18/2018 3:53:22 PM ******/
+			IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS  WHERE TABLE_NAME = 'SubscriptionSummaryDetail' and CONSTRAINT_NAME = 'PK_SubscriptionSummaryDetail')
+			ALTER TABLE [dbo].[SubscriptionSummaryDetail] ADD  CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED 
+			(
+				[tblSubsId] ASC
+			)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF) ON [PRIMARY]
 	end
 
 else
@@ -61,17 +74,17 @@ else
 			[MarkUpPercentage] [float] NULL,
 			[SalesPrice] [float] NULL,
 			[SeatLimit] [float] NULL,
-			[TaxStatus] [nvarchar] (50) NULL,
+			[TaxStatus] [nvarchar](50) NULL,
 			[SeatLimitStartTime] [datetime] NULL,
 			[SeatLimitEndTime] [datetime] NULL,
 			[SeatCounter] [int] NULL,
-			[TemporarySeatLimit] [float] NULL
-		CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED 
-		(
-			[SubscriptionId] ASC
-		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-		) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-	
+			[TemporarySeatLimit] [float] NULL,
+			[tblSubsId] [int] IDENTITY(1,1) NOT NULL,
+			CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED 
+			(
+				[tblSubsId] ASC
+			)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+			) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 	end
 
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'__MigrationHistory')
@@ -690,8 +703,8 @@ begin
 	(ISnull(@ProductName,'')= '' or SSD.SkuName like '%' + @ProductName + '%') and
 	(ISnull(@ResellerPO,'')= '' or OH.PONumber like '%' + @ResellerPO + '%') and
 	(ISnull(@OrderNumber,'')= '' or SSD.OrderNumber like '%' + @OrderNumber + '%') and 
-	SSD.SkuName not like '%Azure%' and SSD.UnitPrice <> '0' and
-	OH.[Status] <> 'cancelled'
+	ISNULL(SSD.SkuName,'') not like '%Azure%' and ISNULL(SSD.UnitPrice,'0') <> '0' and
+	ISNULL(OH.[Status],'') <> 'cancelled'
 ),
  TempCount AS (
     SELECT COUNT(*) AS MaxRows FROM TempResult
@@ -722,8 +735,8 @@ begin
 	(ISnull(@ProductName,'')= '' or SSD.SkuName like '%' + @ProductName + '%') and
 	(ISnull(@ResellerPO,'')= '' or OH.PONumber like '%' + @ResellerPO + '%') and
 	(ISnull(@OrderNumber,'')= '' or SSD.OrderNumber like '%' + @OrderNumber + '%') and 
-	SSD.SkuName not like '%Azure%' and SSD.UnitPrice <> '0' and
-	OH.[Status] <> 'cancelled') a 
+	ISNULL(SSD.SkuName,'') not like '%Azure%' and ISNULL(SSD.UnitPrice,'0') <> '0' and
+	ISNULL(OH.[Status],'') <> 'cancelled') a 
 	WHERE
     rownumber = 1
 ),TempCount AS (

@@ -374,12 +374,12 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                     value.SubscriptionId = subscriptions[i].Keys.FirstOrDefault();
                     //System.Diagnostics.Debug.WriteLine(value.SubscriptionId);
                     var isExist = subscriptionList.Where(j => j.SubscriptionId == value.SubscriptionId).FirstOrDefault();
-                    if(isExist == null)
+                    if (isExist == null)
                     {
                         subscriptionList.Add(value);
                     }
-                    
-                   
+
+
 
                 }
             }
@@ -389,13 +389,15 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
             {
                 var historyJson = JsonConvert.SerializeObject(subscription.SubscriptionHistory, jsonSerializerSettings);
                 var subscriptionInfo = _pllContext.SubscriptionSummaryDetail.Where(x => x.OrderNumber == subscription.OrderNumber && x.SubscriptionId == subscription.SubscriptionId && x.SKU == subscription.SKU).FirstOrDefault();
+                var skuName = subscription.Name;
+                skuName = skuName.Length >= 50 ? subscription.Name.Substring(0, 50) : subscription.Name;
                 if (subscriptionInfo != null)
                 {
 
                     subscriptionInfo.VendorId = subscription.VendorId;
                     subscriptionInfo.VendorName = subscription.VendorName;
                     subscriptionInfo.SKU = subscription.SKU;
-                    subscriptionInfo.SkuName = subscription.Name;
+                    subscriptionInfo.SkuName = skuName;
                     subscriptionInfo.Quantity = subscription.Quantity;
                     subscriptionInfo.Article = subscription.Article;
                     subscriptionInfo.PaymentMethod = subscription.PaymentMethod;
@@ -427,7 +429,7 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                         VendorId = subscription.VendorId != null ? subscription.VendorId : "",
                         VendorName = subscription.VendorName,
                         SKU = subscription.SKU,
-                        SkuName = subscription.Name,
+                        SkuName = skuName,
                         Quantity = subscription.Quantity,
                         Article = subscription.Article,
                         PaymentMethod = subscription.PaymentMethod,
@@ -460,7 +462,7 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
             catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
             {
                 Exception raise = dbEx;
-      
+
                 foreach (var validationErrors in dbEx.EntityValidationErrors)
                 {
                     string entityTypeName = validationErrors.Entry.Entity.GetType().Name;
@@ -469,7 +471,7 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                     {
                         string message = string.Format("{0}:{1}:{2}:{3}",
                             validationErrors.Entry.Entity.ToString(),
-                            validationError.ErrorMessage, entityTypeName,validationError.PropertyName);
+                            validationError.ErrorMessage, entityTypeName, validationError.PropertyName);
                         // raise a new exception nesting
                         // the current instance as InnerException
                         raise = new InvalidOperationException(message, raise);
@@ -486,7 +488,7 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
         {
             if (String.IsNullOrEmpty(markup.OrderNumber) && String.IsNullOrEmpty(markup.SKU))
             {
-                if(markup.Company == "ALL")
+                if (markup.Company == "ALL")
                 {
                     var orders = _pllContext.SubscriptionSummaryDetail;
                     foreach (var order in orders)
@@ -518,7 +520,7 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                         order.SeatCounter = 0;
                     };
                 }
-           
+
             }
             else
             {
