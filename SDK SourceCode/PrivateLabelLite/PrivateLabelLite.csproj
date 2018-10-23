@@ -22,6 +22,7 @@
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -307,25 +308,7 @@
   <ItemGroup>
     <Content Include="Assets\css\app.css" />
     <Content Include="Assets\images\click_here.png" />
-    <Content Include="Assets\images\Dynamics 365 Business.png" />
-    <Content Include="Assets\images\Dynamics 365 Enterprise.png" />
-    <Content Include="Assets\images\Enterprise Mobility Suite.png" />
-    <Content Include="Assets\images\Exchange Online.jpg" />
-    <Content Include="Assets\images\In Tune.png" />
-    <Content Include="Assets\images\Microsoft Annual Billing.jpg" />
-    <Content Include="Assets\images\Microsoft Azure.jpg" />
-    <Content Include="Assets\images\Microsoft Charity.PNG" />
-    <Content Include="Assets\images\Microsoft Windows.jpg" />
-    <Content Include="Assets\images\MS.png" />
-    <Content Include="Assets\images\Office 365 Business.png" />
-    <Content Include="Assets\images\Office 365 Enterprise.jpg" />
-    <Content Include="Assets\images\OneDrive.jpg" />
-    <Content Include="Assets\images\Power BI.jpg" />
-    <Content Include="Assets\images\Project.jpg" />
-    <Content Include="Assets\images\SharePoint.jpg" />
-    <Content Include="Assets\images\Skype for Business.png" />
     <Content Include="Assets\images\Tech Data Cloud Solutions StreamOne.jpg" />
-    <Content Include="Assets\images\Yammer.jpg" />
     <Content Include="Assets\jsLib\angular.min.js" />
     <Content Include="Assets\jsLib\moment.min.js" />
     <Content Include="Assets\js\app.js" />
@@ -365,6 +348,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\pll-publish.pubxml" />
     <None Include="Properties\PublishProfiles\PllRelease.pubxml" />
     <None Include="Properties\PublishProfiles\PrivateLabelLite - FTP %282%29.pubxml" />

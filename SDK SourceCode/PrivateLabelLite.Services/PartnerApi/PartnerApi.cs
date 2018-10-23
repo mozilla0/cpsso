@@ -96,8 +96,8 @@ namespace PrivateLabelLite.Services.PartnerApi
                 }
                 if (!apiResponse.IsSuccess)
                 {
-                    ApiErrorException apiError = JsonConvert.DeserializeObject<ApiErrorException>(respData.ToString());
-                    throw apiError;
+                    //ApiErrorException apiError = JsonConvert.DeserializeObject<ApiErrorException>(respData.ToString());
+                    //throw apiError;
                 }
                 return apiResponse;
             }

@@ -10,6 +10,7 @@ using PrivateLabelLite.Models;
 using PrivateLabelLite.Data;
 using PrivateLabelLite.Entities.Common;
 using System.Web.Routing;
+using System.Text;
 
 namespace PrivateLabelLite.Controllers
 {
@@ -447,6 +448,8 @@ namespace PrivateLabelLite.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
+                byte[] bytes = Encoding.Default.GetBytes(info.DefaultUserName);
+                info.DefaultUserName = Encoding.UTF8.GetString(bytes);
                 var userName = !String.IsNullOrEmpty(info.DefaultUserName) ? info.DefaultUserName : model.EmailConfimation;
                 userName = new String(userName.Where(c => char.IsLetter(c)).ToArray());
                 var user = new ApplicationUser() { UserName = userName, Email = model.EmailConfimation };

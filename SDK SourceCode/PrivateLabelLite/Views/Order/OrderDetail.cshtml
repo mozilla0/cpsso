@@ -15,20 +15,13 @@
         <div class="row">
             <div class="row">
                 <div class="col-md-12 no-padding">
-                    <div class="col-xs-7 no-padding" ng-hide="logHistory">
-                        <h3 class="no-margin">
-                            <a ng-href="~/Order/Subscriptions/{{model.companyName}}"><i class="fa fa-angle-double-left" aria-hidden="true"> &nbsp;</i></a>Order Detail <span>
-                                @if (isReseller)
-                                {<span>:</span>} {{model.orderDetail.company.companyName}}
-                            </span>
-                        </h3>
-                    </div>
+                    <div class="col-xs-7 no-padding" ng-hide="logHistory"><h3 class="no-margin"><a ng-href="~/Order/Subscriptions/{{model.companyName}}"><i class="fa fa-angle-double-left" aria-hidden="true"> &nbsp;</i></a>Order Detail <span>@if (isReseller)
+                    {<span>:</span>} {{model.orderDetail.company.companyName}}</span></h3></div>
                     <div class="col-xs-7 no-padding" ng-show="logHistory"><h3 class="no-margin"><a href=""><i class="fa fa-angle-double-left" aria-hidden="true" ng-click="showOrderDetail()"> &nbsp;</i></a>Order History</h3></div>
 
                     <span class="pull-right"><a><i ng-click="refreshOrderDetail()" class="fa fa-refresh fa-2x" aria-hidden="true"></i></a></span>
                 </div><br><br>
             </div>
-
             <br />
             <div class="row Card-detail">
                 @*start of 1st row(order,domain,PO,customer,history)*@
@@ -40,7 +33,7 @@
                             {
                                 <span>{{model.orderDetail.orderNumber}}</span>
                             }
-
+                             
                             <span ng-class="{'text-red':model.orderDetail.status=='Suspended','text-green':model.orderDetail.status=='Complete'}" title="{{model.orderDetail.status}}">
                                 <i class="fa"
                                    ng-class="{'fa-times-circle': model.orderDetail.status=='Suspended',
@@ -51,7 +44,7 @@
                                 </i>
                             </span>
                         </div>
-
+                 
                         <div class="order-header-table">
                             <b>Domain</b> : {{ model.orderDetail.lines[0].additionalData.domain}}
                         </div>
@@ -73,7 +66,7 @@
                 @*end of 1st row(order,domain,PO,customer,history)*@
                 @*Start of Order Detail*@
                 <div class="col-lg-12" ng-repeat="orderLine in model.orderDetail.lines" ng-hide="logHistory">
-                    <div class="col-lg-7">
+                    <div class="col-lg-4">
                         <h4>BASE SUBSCRIPTION</h4>
                         <h4>{{orderLine.skuName}}</h4>
                         <h5 style="display:inline-block"> SKU : {{orderLine.sku}}</h5>
@@ -111,7 +104,7 @@
                         else
                         {
                             <div ng-if="orderLine.salesPrice!=null">
-
+                              
                                 <b>Price : </b>
                                 <span>{{orderLine.currencySymbol}} {{orderLine.salesPrice | number:2}}</span>
                                 <span ng-if="orderLine.taxStatus !== 'Not Defined'">
@@ -122,8 +115,7 @@
                         }
 
                     </div>
-             
-                    <div class="col-lg-5 no-padding">
+                    <div class="col-lg-8 no-padding">
                         <div class="col-lg-5 no-padding addOn" ng-repeat="addOn in orderLine.addOns">
                             <h4>&nbsp;&nbsp; ADDON</h4>
                             <h5 class="addOn-title"> <span ng-bind="addOn.skuName"></span></h5><br>
