@@ -14,8 +14,12 @@
     @*Desktop View*@
     <div class="main-title" ng-cloak>
         <h3>Price Management : <span ng-bind="model.filter.companyName"></span></h3>
-        <select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions(model.filter)" class="dropdown-theme">
+        @*<select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions()" class="dropdown-theme">
+                <option selected value="" disabled hidden>Choose a company</option>
+            </select>*@
+        <select name="companyId" ng-model="model.filter.companyId" ng-change="model.filter.page=1;getPaginatedSubscriptions()" class="dropdown-theme">
             <option selected value="" disabled hidden>Choose a company</option>
+            <option ng-repeat="details in model.companies" label="{{details.companyName}}" value="{{details.companyId}}">{{details.companyName}}</option>
         </select>
         <br><br>
     </div>
@@ -24,18 +28,18 @@
             <div class="row bottom-margin15" ng-show="model.subscriptionList.length">
                 <div class="col-md-2 col-xs-6 form-group">
                     <h5><b>Save Markup %</b></h5>
-                    <input type="number" style="width:100%"  ng-model="markup.markUpPercentage" ng-required="true" />
+                    <input type="number" style="width:100%" ng-model="markup.markUpPercentage" ng-required="true" />
                 </div>
                 <div class="col-md-2 col-xs-6 form-group">
                     <h5><b>Seat Increase Limit</b> <i class="fa fa-question-circle-o" aria-hidden="true" title="Setting up this you will be limiting the amount of licenses the End User can be himself bring up or down in a period of 24 hour after last seat change."></i></h5>
-                    
-                    <input type="number"  style="width:100%" ng-model="markup.seatLimit" ng-required="true" />
+
+                    <input type="number" style="width:100%" ng-model="markup.seatLimit" ng-required="true" />
                     <div class="hidden-lg hidden-md input-alert">Setting up this you will be limiting the amount of licenses the End User can buy himself bring up or down in a period of 24 hour after last seat change.</div>
                 </div>
                 <div class="col-md-2 col-xs-6 form-inline">
                     <div><input type="radio" name="tax" ng-model="markup.taxStatus" value="Tax Included" ng-required="true" />Tax included</div>
-                    <div><input type="radio" name="tax" ng-model="markup.taxStatus" value="Tax Excluded"  />Tax excluded </div>
-                    <div><input type="radio" name="tax" ng-model="markup.taxStatus" value="Not Defined"  />Empty</div>
+                    <div><input type="radio" name="tax" ng-model="markup.taxStatus" value="Tax Excluded" />Tax excluded </div>
+                    <div><input type="radio" name="tax" ng-model="markup.taxStatus" value="Not Defined" />Empty</div>
                 </div>
 
                 <div class="col-md-2 col-xs-6 pull-right">
@@ -43,86 +47,88 @@
                 </div>
             </div>
         </form>
-            <div class="table-responsive hidden-sm hidden-xs" style="min-height:350px">
-                <form name="saveMarkupIndividualForm">
-                    <table class="table table-hover hidden-sm hidden-xs">
-                        @*Table headings*@
-                        <thead>
-                            <tr>                           
-                                <th class="search-th">
-                                    <input type="text" ng-model="model.filter.domain" ng-change="getPaginatedSubscriptions()"
-                                           ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                                           class="bg-theme-color no-focus-line" placeholder="Domain" />
-                                    <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
-                                </th>
-                                <th class="search-th">
-                                    <input type="text" ng-model="model.filter.productName" ng-change="getPaginatedSubscriptions()"
-                                           ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                                           class="bg-theme-color no-focus-line" placeholder="Product" />
-                                    <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
-                                </th>
-                                <th>Order</th>
-                                <th>Cost Price</th>
-                                <th>Markup %</th>
-                                <th>Sales Price</th>
-                                <th>Seat Increase Limit</th>
-                                <th>Tax Status</th>
-                                <th>Quantity</th>
-                                @*<th class="search-th">
+        <div class="table-responsive hidden-sm hidden-xs" style="min-height:350px">
+            <form name="saveMarkupIndividualForm">
+                <table class="table table-hover hidden-sm hidden-xs">
+                    @*Table headings*@
+                    <thead>
+                        <tr>
+                            <th class="search-th">
+                                <input type="text" ng-model="model.filter.domain" ng-change="getPaginatedSubscriptions()"
+                                       ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                       class="bg-theme-color no-focus-line" placeholder="Domain" />
+                                <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
+                            </th>
+                            <th class="search-th">
+                                <input type="text" ng-model="model.filter.productName" ng-change="getPaginatedSubscriptions()"
+                                       ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                       class="bg-theme-color no-focus-line" placeholder="Product" />
+                                <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
+                            </th>
+                            <th>Order</th>
+                            <th>Cost Price</th>
+                            <th>Markup %</th>
+                            <th>Sales Price</th>
+                            <th>Seat Increase Limit</th>
+                            <th>Tax Status</th>
+                            <th>Quantity</th>
+                            @*<th class="search-th">
                                     <input type="text" ng-model="model.filter.resellerPO" ng-change="getPaginatedSubscriptions()"
                                            ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
                                            class="bg-theme-color no-focus-line" placeholder="ResellerPO" />
                                     <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
                                 </th>*@
-                                <th>Total Sales Price</th>
-                                <th>SKU</th>
-                                <th>Manage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="subscriptions in model.subscriptionList" ng-init="subscriptions.editMarkUp = false;subscriptions.disableOtherEdits = true">
-                               
-                                <td ng-bind="subscriptions.additionalData.domain" ng-model="subscriptions.additionalData.domain"></td>
-                                <td ng-bind="subscriptions.name" ng-model="subscriptions.name"></td>
-                                <td ng-bind="subscriptions.orderNumber" ng-model="subscriptions.orderNumber"></td>
-                                <td ng-model="subscriptions.unitPrice">{{subscriptions.currencySymbol}} {{subscriptions.unitPrice | number:2}}</td>
-                                <td ng-bind="subscriptions.markUpPercentage | number:2" ng-model="subscriptions.markUpPercentage" ng-hide="subscriptions.editMarkUp"></td>
-                                <td ng-model="subscriptions.salesPrice"  ng-hide="subscriptions.editMarkUp"> <span ng-if="subscriptions.salesPrice != null">{{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}} </span></td>
-                                <td class="text-center" ng-bind="subscriptions.seatLimit" ng-model="subscriptions.seatLimit" ng-hide="subscriptions.editMarkUp"></td>
-                                <td ng-bind="subscriptions.taxStatus" ng-model="subscriptions.taxStatus" ng-hide="subscriptions.editMarkUp"></td>
+                            <th>Total Sales Price</th>
+                            <th>SKU</th>
+                            <th>Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="subscriptions in model.subscriptionList" ng-init="subscriptions.editMarkUp = false;subscriptions.disableOtherEdits = true">
 
-                                @* Starting of editable cells *@
-                                <td ng-show="subscriptions.editMarkUp"><input type="number" style="width:70px" step="any" name="markUpPercentage" ng-model="subscriptions.markUpPercentage" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.markUpPercentage,subscriptions,0)"></td>
-                                <td ng-show="subscriptions.editMarkUp"><input type="number" style="width:70px" step="any" name="salesPrice"  ng-model="subscriptions.salesPrice" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.salesPrice,subscriptions,1)" /></td>
-                                <td ng-show="subscriptions.editMarkUp"><input type="number" style="width:70px" step="any" name="salesPriceseatLimit" ng-model="subscriptions.seatLimit" ng-required="true" ng-change="synchronizeSeatLimit(subscriptions)" /></td>
-                                <td ng-show="subscriptions.editMarkUp">
-                                    <select ng-model="subscriptions.taxStatus" style="width:70px;height:27px" ng-required="true">
-                                        <option value="Tax Included">Include Tax</option>
-                                        <option value="Tax Excluded">Exclude Tax</option>
-                                        <option value="Not Defined">Empty</option>
-                                    </select>
-                                </td>
-                                @* Ending of editable cells *@
+                            <td ng-bind="subscriptions.additionalData.domain" ng-model="subscriptions.additionalData.domain"></td>
+                            <td ng-bind="subscriptions.name" ng-model="subscriptions.name"></td>
+                            <td ng-bind="subscriptions.orderNumber" ng-model="subscriptions.orderNumber"></td>
+                            <td ng-model="subscriptions.unitPrice">{{subscriptions.currencySymbol}} {{subscriptions.unitPrice | number:2}}</td>
+                            <td ng-bind="subscriptions.markUpPercentage | number:2" ng-model="subscriptions.markUpPercentage" ng-hide="subscriptions.editMarkUp"></td>
+                            <td ng-model="subscriptions.salesPrice" ng-hide="subscriptions.editMarkUp"> <span ng-if="subscriptions.salesPrice != null">{{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}} </span></td>
+                            <td class="text-center" ng-bind="subscriptions.seatLimit" ng-model="subscriptions.seatLimit" ng-hide="subscriptions.editMarkUp"></td>
+                            <td ng-bind="subscriptions.taxStatus" ng-model="subscriptions.taxStatus" ng-hide="subscriptions.editMarkUp"></td>
 
-                                <td ng-bind="subscriptions.quantity" ng-model="subscriptions.quantity" class="text-center"></td>
-                                @*<td ng-bind="subscriptions.poNumber" ng-model="subscriptions.poNumber"></td>*@
-                                <td ng-model="subscriptions.totalSalesPrice"><span ng-if="subscriptions.salesPrice != null"> {{subscriptions.currencySymbol}} {{subscriptions.quantity * subscriptions.salesPrice | number:2}} </span></td>
-                                <td ng-bind="subscriptions.sku" ng-model="subscriptions.sku"></td>
-                                <td ng-hide="subscriptions.editMarkUp" ng-show="subscriptions.disableOtherEdits">
-                                    <span class="btn-manage"><i class="fa fa-pencil" aria-hidden="true" ng-click="saveSelectedData(subscriptions);subscriptions.editMarkUp = true"></i></span>
-                                </td>
-                                <td ng-show="subscriptions.editMarkUp">                   
-                                    <button type="submit" class="btn btn-manage" 
-                                    @*ng-disabled="!(!!subscriptions.markUpPercentage && !!subscriptions.salesPrice && !!subscriptions.seatLimit)"*@
-                                            ng-disabled="showEdit"
-                                    ng-click="saveMarkup(subscriptions,model.filter.companyName)"><i class="fa fa-floppy-o" aria-hidden="true"  title="Save"></i></button>
-                                    <span class="btn-manage"><i class="fa fa-times fa-2x" aria-hidden="true" ng-click="getOldData(subscriptions);subscriptions.editMarkUp = false" title="Cancel"></i></span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
-            </div>
+                            @* Starting of editable cells *@
+                            <td ng-show="subscriptions.editMarkUp"><input type="number" style="width:70px" step="any" name="markUpPercentage" ng-model="subscriptions.markUpPercentage" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.markUpPercentage,subscriptions,0)"></td>
+                            <td ng-show="subscriptions.editMarkUp"><input type="number" style="width:70px" step="any" name="salesPrice" ng-model="subscriptions.salesPrice" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.salesPrice,subscriptions,1)" /></td>
+                            <td ng-show="subscriptions.editMarkUp"><input type="number" style="width:70px" step="any" name="salesPriceseatLimit" ng-model="subscriptions.seatLimit" ng-required="true" ng-change="synchronizeSeatLimit(subscriptions)" /></td>
+                            <td ng-show="subscriptions.editMarkUp">
+                                <select ng-model="subscriptions.taxStatus" style="width:70px;height:27px" ng-required="true">
+                                    <option value="Tax Included">Include Tax</option>
+                                    <option value="Tax Excluded">Exclude Tax</option>
+                                    <option value="Not Defined">Empty</option>
+                                </select>
+                            </td>
+                            @* Ending of editable cells *@
+
+                            <td ng-bind="subscriptions.quantity" ng-model="subscriptions.quantity" class="text-center"></td>
+                            @*<td ng-bind="subscriptions.poNumber" ng-model="subscriptions.poNumber"></td>*@
+                            <td ng-model="subscriptions.totalSalesPrice"><span ng-if="subscriptions.salesPrice != null"> {{subscriptions.currencySymbol}} {{subscriptions.quantity * subscriptions.salesPrice | number:2}} </span></td>
+                            <td ng-bind="subscriptions.sku" ng-model="subscriptions.sku"></td>
+                            <td ng-hide="subscriptions.editMarkUp" ng-show="subscriptions.disableOtherEdits">
+                                <span class="btn-manage"><i class="fa fa-pencil" aria-hidden="true" ng-click="saveSelectedData(subscriptions);subscriptions.editMarkUp = true"></i></span>
+                            </td>
+                            <td ng-show="subscriptions.editMarkUp">
+                                <button type="submit" class="btn btn-manage"
+                                        @*ng-disabled="!(!!subscriptions.markUpPercentage && !!subscriptions.salesPrice && !!subscriptions.seatLimit)"*@
+                                        ng-disabled="showEdit"
+                                        ng-click="saveMarkup(subscriptions,model.filter.companyName)">
+                                    <i class="fa fa-floppy-o" aria-hidden="true" title="Save"></i>
+                                </button>
+                                <span class="btn-manage"><i class="fa fa-times fa-2x" aria-hidden="true" ng-click="getOldData(subscriptions);subscriptions.editMarkUp = false" title="Cancel"></i></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
         @*PAGING*@
         <div paging updatemethod="getPaginatedSubscriptions" pageno="model.filter.page" pagesize="@ConfigKeys.PageSize" totalrecords="model.subscriptionList[0].totalrecords" isfixedpagesize="true"></div>
     </div>
@@ -142,20 +148,20 @@
                     </a>
                 </div>
                 <div class="btn-manage-xs" ng-show="subscriptions.editMarkUp">
-                    <button type="submit" class="btn btn-manage" ng-disabled="!(!!subscriptions.markUpPercentage && !!subscriptions.salesPrice && !!subscriptions.seatLimit)" ng-click="saveMarkup(subscriptions,model.filter.companyName)"><i class="fa fa-floppy-o" aria-hidden="true"  title="Save"></i></button>
+                    <button type="submit" class="btn btn-manage" ng-disabled="!(!!subscriptions.markUpPercentage && !!subscriptions.salesPrice && !!subscriptions.seatLimit)" ng-click="saveMarkup(subscriptions,model.filter.companyName)"><i class="fa fa-floppy-o" aria-hidden="true" title="Save"></i></button>
                     <span class="btn-manage"><i class="fa fa-times fa-2x" aria-hidden="true" ng-click="getOldData(subscriptions);subscriptions.editMarkUp = false" title="Cancel"></i></span>
                 </div>
 
             </div>
             <div class="row data-body" style="padding-bottom:10px">
-                <div class="col-xs-6 no-padding" ng-hide="subscriptions.editMarkUp"><b>MarkUp % :</b> <span >{{subscriptions.markUpPercentage | number:2}}</span></div>
+                <div class="col-xs-6 no-padding" ng-hide="subscriptions.editMarkUp"><b>MarkUp % :</b> <span>{{subscriptions.markUpPercentage | number:2}}</span></div>
                 <div class="col-xs-6 no-padding" ng-hide="subscriptions.editMarkUp"><b>Sales Price :</b><span> {{subscriptions.currencySymbol}} {{subscriptions.salesPrice | number:2}}</span></div>
                 <div class="col-xs-6 no-padding" ng-hide="subscriptions.editMarkUp"><b>Seat Increase Limit :</b> <span>{{subscriptions.seatLimit}} </span></div>
                 <div class="col-xs-6 no-padding" ng-hide="subscriptions.editMarkUp"><b>Tax Status :</b><span> {{subscriptions.taxStatus}}</span></div>
 
                 @* Starting of editable cells for Mobile Screen*@
                 <div class="col-xs-6" style="padding-bottom:10px" ng-show="subscriptions.editMarkUp"><b class="col-xs-12 no-padding">MarkUp % :</b><span><input type="number" step="any" style="width:70px" name="markUpPercentage" ng-model="subscriptions.markUpPercentage" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.markUpPercentage,subscriptions,0)"></span></div>
-                <div class="col-xs-6" style="padding-bottom:10px" ng-show="subscriptions.editMarkUp"><b class="col-xs-12 no-padding">Sales Price :</b><span><input type="number" step="any" style="width:70px" name="salesPrice" ng-model="subscriptions.salesPrice" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.salesPrice,subscriptions,1)"/></span></div>
+                <div class="col-xs-6" style="padding-bottom:10px" ng-show="subscriptions.editMarkUp"><b class="col-xs-12 no-padding">Sales Price :</b><span><input type="number" step="any" style="width:70px" name="salesPrice" ng-model="subscriptions.salesPrice" ng-required="true" ng-change="synchronizeMarkUp(subscriptions.salesPrice,subscriptions,1)" /></span></div>
                 <div class="col-xs-6" style="padding-bottom:10px" ng-show="subscriptions.editMarkUp"><b class="col-xs-12 no-padding">Seat Increase Limit :</b><span><input type="number" step="any" style="width:70px" name="salesPriceseatLimit" ng-model="subscriptions.seatLimit" ng-required="true" /></span></div>
                 <div class="col-xs-6" style="padding-bottom:10px" ng-show="subscriptions.editMarkUp">
                     <b class="col-xs-12 no-padding">Tax Status :</b><span>

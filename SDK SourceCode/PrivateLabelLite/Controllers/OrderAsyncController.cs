@@ -95,14 +95,8 @@ namespace PrivateLabelLite.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        void test<TResult>()
-        {
-            
-
-        }
         public bool RefereshSubscriptionDetail()
         {
-            
             bool subResp = false;
             //Getting all subscriptions for reseller
             var subscriptions = _partnerApi.GetSubscriptiondetail().Subscriptions;

@@ -75,20 +75,29 @@ namespace PrivateLabelLite.Controllers
         }
         public ActionResult Subscriptions(string id)
         {
-            string allCompany = id;
             if (id != null)
             {
+                decimal companyId;
+                if (!Decimal.TryParse(id, out companyId))
+                {
+                    companyId = 0;
+                }
 
                 var companyFilter = new CompanyOrderFilter()
                 {
                     Page = 1,
                     RecordsPerPage = ConfigKeys.PageSize,
-                    CompanyName = id
+                    CompanyId = companyId
                 };
                 var companies = _companyService.GetCompanies(new CompanyFilter());
                 companies.Insert(0, new CompanyDetail { CompanyName = "ALL" });
+                var company = companies.FirstOrDefault(x => x.CompanyId == companyId);
+                if (company == null)
+                {
+                    company = companies.FirstOrDefault(x => x.CompanyId == 0);
+                }
 
-                companyFilter.CompanyName = id;
+                companyFilter.CompanyName = company.CompanyName;
                 var subscriptionList = _companyService.GetSubscriptionDetail(companyFilter);
 
                 SubscriptionSummaryModel model = new SubscriptionSummaryModel()
@@ -97,10 +106,10 @@ namespace PrivateLabelLite.Controllers
                     Companies = companies,
                     Filter = companyFilter
                 };
-                model.Filter.CompanyName = allCompany;
+
+                model.Filter.CompanyName = company.CompanyName;
                 return View(model);
             }
-
             else
             {
                 SubscriptionSummaryModel model = null;
@@ -109,7 +118,8 @@ namespace PrivateLabelLite.Controllers
                 var companyFilter = new CompanyOrderFilter()
                 {
                     Page = 1,
-                    RecordsPerPage = ConfigKeys.PageSize
+                    RecordsPerPage = ConfigKeys.PageSize,
+                    CompanyId = -1
                 };
                 model = new SubscriptionSummaryModel()
                 {
@@ -129,26 +139,31 @@ namespace PrivateLabelLite.Controllers
 
 
         [HttpGet]
-        public ActionResult OrderDetail(string id, string companyName)
+        public ActionResult OrderDetail(string orderNumber, string companyId)
         {
-            if (string.IsNullOrEmpty(id))
+            decimal compId;
+            if (!Decimal.TryParse(companyId, out compId))
+            {
+                compId = 0;
+            }
+            if (string.IsNullOrEmpty(orderNumber))
             {
                 return RedirectToAction("Index");
             }
-            else if (!_userService.IsEndUserMappingExist(GetLoggedInUserInfo()) || !_orderService.DoesOrderBelongsToUser(id, GetLoggedInUserInfo()))
+            else if (!_userService.IsEndUserMappingExist(GetLoggedInUserInfo()) || !_orderService.DoesOrderBelongsToUser(orderNumber, GetLoggedInUserInfo()))
             {
                 return View("UserConfigurationError");
             }
+            var orderDetail = _orderService.GetOrderDetail(orderNumber);
             OrderDetailModel model = new OrderDetailModel()
             {
-                OrderNo = id,
-                OrderDetail = _orderService.GetOrderDetail(id),
+                OrderNo = orderNumber,
+                OrderDetail = orderDetail,
                 ModifyOrder = new ModifyOrder(),
                 ModifyAddOnsDetail = new ModifyOrderAddons(),
-                CompanyName = companyName
+                CompanyName = orderDetail.Company.CompanyName,
+                CompanyId = compId
             };
-
-
 
             return View(model);
         }
@@ -339,9 +354,9 @@ namespace PrivateLabelLite.Controllers
                 Filter = companyFilter
 
             };
-           
-                return Json(model, JsonRequestBehavior.AllowGet);
-           
+
+            return Json(model, JsonRequestBehavior.AllowGet);
+
         }
 
         public void DownloadSubscriptionHistory(string id)
@@ -425,12 +440,12 @@ namespace PrivateLabelLite.Controllers
         public ActionResult GetUnitPrice(OrderDetail details)
         {
             var prices = _orderService.GetUnitPrice(details);
-            return Json(prices.Lines,JsonRequestBehavior.DenyGet);
+            return Json(prices.Lines, JsonRequestBehavior.DenyGet);
 
         }
-        public bool IsUserAuthorizeToIncreaseSeat(OrderLine orderLine,string ordernumber,int originalQuantity)
+        public bool IsUserAuthorizeToIncreaseSeat(OrderLine orderLine, string ordernumber, int originalQuantity)
         {
-            return _orderService.IsUserAuthorizeToIncreaseSeat(orderLine,ordernumber, originalQuantity);
+            return _orderService.IsUserAuthorizeToIncreaseSeat(orderLine, ordernumber, originalQuantity);
         }
 
         public bool UpdateSeatCountForDay(OrderLine orderLine, string ordernumber, int originalQuantity)

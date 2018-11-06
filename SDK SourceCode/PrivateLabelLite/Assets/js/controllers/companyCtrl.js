@@ -11,6 +11,7 @@
         $scope.selectedSubscriptionForMarkUp = {};
         $scope.showTableHeading = false;
         $scope.company = null;
+        $scope.subsCompanyId = null;
         $scope.showEndUserPopup = function () {
             $scope.model.user = { email: '' };
             $("#endUserPopup").modal();
@@ -48,9 +49,9 @@
                     $scope.getCompanyEndUsers($scope.model.filter);
                 } else $scope.message = resp.data.message;
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
         $scope.editSalesOrderMapping = function (companyOrder) {
             if (companyOrder != null) {
@@ -95,9 +96,9 @@
                 }
 
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
         $scope.getCompanyEndUsers = function (item) {
             if (item) {
@@ -118,9 +119,9 @@
                     $scope.model.filter.totalRecords = resp.data.length > 0 ? resp.data[0].totalRecords : 0;
                 }
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
         $scope.getCompanyOrders = function (filter) {
             companyData.getCompanyOrders(filter).then(function (resp) {
@@ -135,9 +136,9 @@
 
                 }
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
         $scope.getSalesOrderIdListFromCSV = function (salesOrderIdCSV) {
             var soIds = [];
@@ -235,9 +236,9 @@
 
                 }
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
 
         //DELETING company(sales) order mapping
@@ -259,9 +260,9 @@
                     $scope.showSingleDelete = false;
                 }
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
 
         $scope.getPaginatedUsers = function () {
@@ -340,15 +341,20 @@
                     $scope.model.companies = resp.data.data;
                 }
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
 
-        $scope.getPaginatedSubscriptions = function (model) {
+        $scope.getPaginatedSubscriptions = function () {
+            if ($scope.model.filter.companyId == null && $scope.subsCompanyId != null)
+                $scope.model.filter.companyId = $scope.subsCompanyId.toString();
+            if ($scope.model.filter.companyId == "-1")
+                return;
             companyData.getPaginatedSubscriptions($scope.model.filter).then(function (resp) {
                 //$scope.company = $scope.model.filter.companyName;
                 $scope.model.subscriptionList = resp.data.subscriptionList;
+                $scope.model.filter.companyName = resp.data.filter.companyName;
                 $scope.showTableHeading = true;
                 $scope.model.subscriptionList.length = resp.data.subscriptionList.length;
                 if ($scope.model.subscriptionList.length > 0) {
@@ -370,7 +376,7 @@
             angular.forEach($scope.model.subscriptionList, function (subscription, index) {
                 if (subscription.mapping == true) {
                     if (!$scope.toBeMapped.indexOf(subscription.orderNumber && subscription.sku) !== -1) {
-                        $scope.toBeMapped.push({ orderNumber: subscription.orderNumber , sku:subscription.sku });
+                        $scope.toBeMapped.push({ orderNumber: subscription.orderNumber, sku: subscription.sku });
                         $('#successModal').modal('show');
                     }
 
@@ -396,9 +402,9 @@
                 else {
                     $('#successModal').modal('show');
                     $scope.successModalMessage = resp.data.message;
-                  
+
                 }
-                
+
             }).catch(function () {
 
             });
@@ -407,48 +413,47 @@
         $scope.initSubscriptionDetail = function () {
             companyData.updateSubscriptionDetail().then(function (resp) {
                 var response = resp.data;
-                if (response == "True")
-                {
+                if (response == "True") {
                     $scope.SubscriptionDetailModalTitle = "Subscriptions Status:  ";
                     $scope.SubscriptionDetailModalMessage = "Your Subscriptions List has been succesfully updated from StreamOne"
                     $scope.initSubscriptionSuccess = true;
                 }
-                else
-                {
+                else {
                     $scope.SubscriptionDetailModalTitle = "Subscriptions Status:  ";
                     $scope.SubscriptionDetailModalMessage = "Subscriptions List updation has been failed, Please contact your administrator."
                     $scope.initSubscriptionSuccess = true;
                 }
             })
-            .catch(function () {
+                .catch(function () {
 
-            });
+                });
         };
         $scope.initMapping = function () {
             angular.forEach($scope.model.subscriptionList, function (item) {
                 item.mapping = false;
             });
         },
-        $scope.getFirstTimeSubscriptions = function () {
-            //check if database is empty only then call get all subscriptions
-            companyData.checkDatabase().then(function (resp) {
-                var response = resp.data;
-                if (response == "True") {
-                    $scope.initSubscriptionDetail();
-                }
-            })
-            .catch(function () {
+            $scope.getFirstTimeSubscriptions = function () {
+                $scope.subsCompanyId = $scope.model.filter.companyId;
+                //check if database is empty only then call get all subscriptions
+                companyData.checkDatabase().then(function (resp) {
+                    var response = resp.data;
+                    if (response == "True") {
+                        $scope.initSubscriptionDetail();
+                    }
+                })
+                    .catch(function () {
 
-            });
-        },
-       
-        $scope.showSaveMarkupModal = function () {
-            $scope.saveCompanyLevelMarkUpMessage = "Are you sure you want to perform this update?";
-            $("#saveCompanyLevelMarkUp").modal();
-        }
+                    });
+            },
+
+            $scope.showSaveMarkupModal = function () {
+                $scope.saveCompanyLevelMarkUpMessage = "Are you sure you want to perform this update?";
+                $("#saveCompanyLevelMarkUp").modal();
+            }
         $scope.saveMarkup = function (markup, company) {
             markup.company = company;
-           
+
             companyData.saveMarkup(markup).then(function (resp) {
                 if (resp) {
                     $scope.CompanyLevelMarkUpSuccessMessage = "Changes updated Successfully"
@@ -460,8 +465,8 @@
                 $scope.getPaginatedSubscriptions();
                 $scope.selectedSubscriptionForMarkUp = {};
             })
-            .catch(function () {
-            });
+                .catch(function () {
+                });
         }
 
         $scope.checkCompanyTable = function () {
@@ -478,15 +483,15 @@
             $scope.oldData = angular.copy(subscription);
             angular.forEach($scope.model.subscriptionList, function (subscriptions, index) {
                 if (subscriptions.subscriptionId != subscription.subscriptionId) {
-                    subscriptions.disableOtherEdits = false;                   
+                    subscriptions.disableOtherEdits = false;
                 }
             });
         }
 
         $scope.getOldData = function (subscription) {
             angular.forEach($scope.model.subscriptionList, function (subscriptions, index) {
-                    subscriptions.disableOtherEdits = true;
-                
+                subscriptions.disableOtherEdits = true;
+
             });
 
             if (subscription.subscriptionId == $scope.oldData.subscriptionId) {
@@ -520,16 +525,16 @@
             }
 
             var currentObj;
-           // var currentObj = $scope.model.subscriptionList.find(i => i.subscriptionId == subscriptions.subscriptionId);
+            // var currentObj = $scope.model.subscriptionList.find(i => i.subscriptionId == subscriptions.subscriptionId);
             angular.forEach($scope.model.subscriptionList, function (subscription, index) {
                 if (subscription.subscriptionId == subscriptions.subscriptionId) {
-                     currentObj = subscriptions;
+                    currentObj = subscriptions;
                 }
             });
-          
+
             if (flag == 0) //flag is zero, means MarkUp Percentage is recieved and calculate salesprice
             {
-               // currentObj.markUpPercentage = parseFloat(dynamic.toFixed(2));
+                // currentObj.markUpPercentage = parseFloat(dynamic.toFixed(2));
                 currentObj.markUpPercentage = Math.round(dynamic * Math.pow(10, 2)) / Math.pow(10, 2);
                 var salesprice = parseFloat(subscriptions.unitPrice) + ((dynamic / 100) * (parseFloat(subscriptions.unitPrice)));
                 salesprice = Math.round(salesprice * Math.pow(10, 2)) / Math.pow(10, 2);
@@ -538,7 +543,7 @@
                         subscription.salesPrice = salesprice;
                     }
                 });
-                
+
             }
             else //flag is 1, means salesprice  is recieved and calculate Markup Percentage
             {

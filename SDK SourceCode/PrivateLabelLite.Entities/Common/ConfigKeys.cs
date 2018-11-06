@@ -38,6 +38,7 @@ namespace PrivateLabelLite.Entities.Common
         public static string AppUrl;
         public static string SubscriptionSearchUrl;
         public static string ProductPricingUrl;
+        public static string WebPagesVersion;
         public static string GetAppSetting(string setting)
         {
             if (DbSettings != null)
@@ -47,7 +48,7 @@ namespace PrivateLabelLite.Entities.Common
 
                 if (set != null)
                 {
-                    
+
                     return set.Value;
                 }
 
@@ -85,6 +86,7 @@ namespace PrivateLabelLite.Entities.Common
             AppUrl = GetAppSetting("AppUrl");
             SubscriptionSearchUrl = GetAppSetting("SubscriptionSearchUrl");
             ProductPricingUrl = GetAppSetting("ProductPricingUrl");
+            WebPagesVersion = GetAppSetting("webpages:Version");
         }
     }
 }

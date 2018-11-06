@@ -20,8 +20,8 @@ namespace PrivateLabelLite
 
             routes.MapRoute(
                 name: "getOrderDetail", 
-                url: "order/OrderDetail/{id}/{companyName}",
-                defaults: new { controller = "Order", action = "OrderDetail", id = UrlParameter.Optional, companyName= UrlParameter.Optional });
+                url: "order/OrderDetail/{OrderNumber}/{CompanyId}",
+                defaults: new { controller = "Order", action = "OrderDetail", OrderNumber = UrlParameter.Optional, CompanyId = UrlParameter.Optional });
 
             routes.MapRoute(
                name: "Default",
