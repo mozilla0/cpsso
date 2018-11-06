@@ -452,7 +452,7 @@ namespace PrivateLabelLite.Controllers
                 info.DefaultUserName = Encoding.UTF8.GetString(bytes);
                 var userName = !String.IsNullOrEmpty(info.DefaultUserName) ? info.DefaultUserName : model.EmailConfimation;
                 userName = new String(userName.Where(c => char.IsLetter(c)).ToArray());
-                var user = new ApplicationUser() { UserName = userName, Email = model.EmailConfimation };
+                var user = new ApplicationUser() { UserName = model.EmailConfimation, Email = model.EmailConfimation };
                 IdentityResult result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

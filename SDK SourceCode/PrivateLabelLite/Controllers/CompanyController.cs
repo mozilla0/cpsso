@@ -38,7 +38,7 @@ namespace PrivateLabelLite.Controllers
             this._emailService = emailService;
         }
 
-       
+
         #endregion
         // GET: Company
         public ActionResult EndUserMapping()
@@ -84,7 +84,7 @@ namespace PrivateLabelLite.Controllers
             }
             return View(model);
         }
-           
+
 
         [HttpGet]
         public ActionResult SalesOrderMapping()
@@ -98,7 +98,7 @@ namespace PrivateLabelLite.Controllers
                 RecordsPerPage = ConfigKeys.PageSize
             };
             var subscriptionList = _companyService.GetSubscriptionDetail(companyFilter);
-           
+
             if (subscriptionList != null)
             {
                 model = new SubscriptionSummaryModel()
@@ -107,11 +107,11 @@ namespace PrivateLabelLite.Controllers
                     Companies = companies,
                     Filter = companyFilter
                 };
-                
+
             }
             return View(model);
         }
-   
+
         [HttpPost]
         public ActionResult GetCompanyEndUsers(EndCustomerFilter customerFilter)
         {
@@ -121,24 +121,25 @@ namespace PrivateLabelLite.Controllers
 
             return Json(endUsers, JsonRequestBehavior.DenyGet);
         }
+
         public ActionResult GetPaginatedSubscriptions(CompanyOrderFilter filter)
         {
-            //var companyFilter = new CompanyOrderFilter()
-            //{
-            //    Page = 1,
-            //    RecordsPerPage = ConfigKeys.PageSize,
-            //    CompanyName = filter.CompanyName
-            //};
-            if (filter.CompanyName=="ALL Companies") {
-                filter.CompanyName = "";
+            var companies = _companyService.GetCompanies(new CompanyFilter());
+            companies.Insert(0, new CompanyDetail { CompanyName = "ALL", CompanyId = 0 });
+            var company = companies.FirstOrDefault(x => x.CompanyId == filter.CompanyId);
+            if (company == null)
+            {
+                company = companies.FirstOrDefault(x => x.CompanyId == 0);
             }
+            filter.CompanyName = company.CompanyName;
             var subscriptionList = _companyService.GetSubscriptionDetail(filter);
 
             SubscriptionSummaryModel model = new SubscriptionSummaryModel()
             {
                 SubscriptionList = Mapper.Map<List<SubscriptionDetailModel>>(subscriptionList.SubscriptionList),
-               
+                Filter = filter
             };
+            model.Filter.CompanyName = company.CompanyName;
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
@@ -169,7 +170,7 @@ namespace PrivateLabelLite.Controllers
         }
 
 
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UpsertCompanyOrderMapping(CompanyOrderModels model)
@@ -240,7 +241,7 @@ namespace PrivateLabelLite.Controllers
             return Json(res, JsonRequestBehavior.DenyGet);
         }
 
-      public ActionResult SaveMapping(List<SubscriptionDetailModel> unMapped, List<SubscriptionDetailModel> mapped)
+        public ActionResult SaveMapping(List<SubscriptionDetailModel> unMapped, List<SubscriptionDetailModel> mapped)
         {
             List<SubscriptionDetail> unMap = Mapper.Map<List<SubscriptionDetailModel>, List<SubscriptionDetail>>(unMapped);
             List<SubscriptionDetail> Map = Mapper.Map<List<SubscriptionDetailModel>, List<SubscriptionDetail>>(mapped);
@@ -296,7 +297,7 @@ namespace PrivateLabelLite.Controllers
         [HttpGet]
         public ActionResult UpdateSubscription()
         {
-           var response =  RedirectToAction("RefereshSubscriptionDetail", "OrderAsync");
+            var response = RedirectToAction("RefereshSubscriptionDetail", "OrderAsync");
             return response;
         }
         public bool checkDatabase()

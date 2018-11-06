@@ -18,8 +18,12 @@
 
     <div>
         <h3>Sales Order Mapping : <span ng-bind="model.filter.companyName"></span></h3>
-        <select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions(model.filter)" placeholder="" class="dropdown-theme">
+        @*<select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions()" placeholder="" class="dropdown-theme">
             <option value="" selected disabled hidden>Choose a Company</option>
+        </select>*@
+        <select name="companyId" ng-model="model.filter.companyId" ng-change="model.filter.page=1;getPaginatedSubscriptions()" class="dropdown-theme">
+            <option selected value="" disabled hidden>Choose a company</option>
+            <option ng-repeat="details in model.companies" label="{{details.companyName}}" value="{{details.companyId}}">{{details.companyName}}</option>
         </select>
         <div class="margin-top10">
             <button class="btn btn-sm btn-primary" ng-click="SaveMapping()">Save Mapping</button>

@@ -67,7 +67,7 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                 OrderSearch = new List<OrderDetail>()
             };
 
-            var data = _pllContext.procXmlGetOrders(userInfo.IsUserAReseller,userInfo.Email,filter.SalesOrderNo, filter.EndUser,filter.SkuName, filter.PageSize,filter.PageNo,filter.CompanyName).ToList();
+            var data = _pllContext.procXmlGetOrders(userInfo.IsUserAReseller, userInfo.Email, filter.SalesOrderNo, filter.EndUser, filter.SkuName, filter.PageSize, filter.PageNo, filter.CompanyName).ToList();
             if (data != null)
             {
                 foreach (var order in data)
@@ -171,14 +171,14 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                             CurrencySymbol = order.CurrencySymbol,
                             CurrencyCode = order.CurrencyCode,
                             Domain = GetDomain(order.Lines),
-                            PONumber=order.PONumber,
+                            PONumber = order.PONumber,
                             OrderJson = orderJson
                         });
                     var lines = order.Lines.GroupBy(i => i.SKU).Select(a => a.FirstOrDefault()).ToList();
                     foreach (var line in lines)
                     {
-                       
-                       
+
+
                         _pllContext.OrderLine.Add(
                         new DataEntities.OrderLine()
                         {
@@ -209,7 +209,7 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
             {
                 return false;
             }
-        
+
         }
 
         private string GetDomain(List<PrivateLabelLite.Entities.Order.OrderLine> lines)
@@ -228,30 +228,34 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
 
         public OrderDetail GetOrderDetail(string orderNumber)
         {
-            var order =  _pllContext.OrderHeader.Where(x => x.OrderNumber == orderNumber).FirstOrDefault();
+            var order = _pllContext.OrderHeader.Where(x => x.OrderNumber == orderNumber).FirstOrDefault();
+            var orderDetail = new OrderDetail();
+            var company = new Company();
             if (order != null)
             {
                 var companyDetail = _pllContext.CompanyOrder.Where(x => x.SalesOrderId == order.OrderNumber).FirstOrDefault();
-                var orderDetail = JsonConvert.DeserializeObject<OrderDetail>(order.OrderJson);
-                if(orderDetail != null && companyDetail != null)
+                orderDetail = JsonConvert.DeserializeObject<OrderDetail>(order.OrderJson);
+                if (orderDetail != null && companyDetail != null)
                 {
-                    var company = _pllContext.Company.Where(x => x.CompanyId == companyDetail.CompanyId).FirstOrDefault();
+                    company = _pllContext.Company.Where(x => x.CompanyId == companyDetail.CompanyId).FirstOrDefault();
                     orderDetail.Company = new CompanyFilter
                     {
                         CompanyId = companyDetail.CompanyId,
                         CompanyName = company.Name
                     };
                 }
-                
-                    var companyNames = _pllContext.SubscriptionSummaryDetail.Where(x => x.OrderNumber == orderNumber).ToList();
-
-                    orderDetail.Company = companyNames.AsEnumerable().Select(x=> new CompanyFilter{CompanyName = x.Company }).FirstOrDefault();
-                    
-                        
-                return orderDetail;
+                else
+                {
+                    var subscriptionSummaryDetail = _pllContext.SubscriptionSummaryDetail.Where(x => x.OrderNumber == orderNumber).FirstOrDefault();
+                    company = _pllContext.Company.Where(x => x.Name == subscriptionSummaryDetail.Company).FirstOrDefault();
+                    orderDetail.Company = new CompanyFilter
+                    {
+                        CompanyId = company.CompanyId,
+                        CompanyName = company.Name
+                    };
+                }
             }
-            else
-                return null;
+            return orderDetail;
         }
 
         public bool checkDatabase()
@@ -273,7 +277,7 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                                             Sku = o.SKU,
                                             VendorMapId = o.VendorId
                                         }).ToList();
-                                       
+
 
             return subscriptionProducts;
         }
@@ -283,12 +287,12 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
             {
                 Lines = new List<Entities.Order.OrderLine>()
             };
-            if(details != null)
+            if (details != null)
             {
                 foreach (var line in details.Lines)
                 {
                     var detail = _pllContext.SubscriptionSummaryDetail.Where(x => x.SKU == line.SKU && x.OrderNumber == details.OrderNumber).FirstOrDefault();
-                    if(detail != null)
+                    if (detail != null)
                     {
                         //if (detail.SalesPrice == null) { detail.SalesPrice = 0; }
                         //if (detail.MarkUpPercentage == null) { detail.MarkUpPercentage = 0; }
@@ -310,22 +314,22 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
 
                         });
                     }
-                   
+
                 }
             }
             return orderDetail;
         }
 
-        public bool IsUserAuthorizeToIncreaseSeat(Entities.Order.OrderLine orderLine, string ordernumber,int originalQuantity)
+        public bool IsUserAuthorizeToIncreaseSeat(Entities.Order.OrderLine orderLine, string ordernumber, int originalQuantity)
         {
             int NewQuantity = Convert.ToInt32(orderLine.Quantity);
             orderLine.Quantity = Convert.ToString(NewQuantity - originalQuantity);
-           var response = ( from o in _pllContext.procIsUserAuthorizeToIncreaseSeat(orderLine.Quantity, orderLine.SKU, orderLine.SeatCounter, ordernumber, originalQuantity) select o).FirstOrDefault();
+            var response = (from o in _pllContext.procIsUserAuthorizeToIncreaseSeat(orderLine.Quantity, orderLine.SKU, orderLine.SeatCounter, ordernumber, originalQuantity) select o).FirstOrDefault();
 
             //response = Convert.ToBoolean(response);
-            return response.ToBoolean(); 
+            return response.ToBoolean();
 
-            
+
         }
         public bool UpdateSeatCountForDay(Entities.Order.OrderLine orderLine, string ordernumber, int originalQuantity)
         {

@@ -58,9 +58,9 @@
         $scope.isFixedPageSize = $scope.isFixedPageSize || true;
         $scope.pageSizes = [10, 20, 30, 40, 50, 100, 250, 500];
         $scope.isInitialized = false;
-        if ($scope.totalRecords <= $scope.pageSizes[0]) {
-            return;
-        }
+        //if ($scope.totalRecords <= $scope.pageSizes[0]) {
+        //    return;
+        //}
         $scope.totalRecords = isNaN(parseInt($scope.totalRecords)) ? 0 : parseInt($scope.totalRecords);
         $scope.pageNo = isNaN(parseInt($scope.pageNo$)) ? 1 : parseInt($scope.pageNo$);
         $scope.goToPage = 1;

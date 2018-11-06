@@ -13,5 +13,6 @@ namespace PrivateLabelLite.Models
         public ModifyOrder ModifyOrder { get; set; }
         public ModifyOrderAddons ModifyAddOnsDetail { get; set; }
         public string CompanyName { get; set; }
+        public decimal CompanyId { get; set; }
     }
 }

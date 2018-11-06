@@ -23,8 +23,9 @@
         </h3>
         <div class="main-title" ng-cloak>
             <h3>Customer Admin : <span ng-bind="model.filter.companyName"></span></h3>
-            <select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions(model.filter)" class="dropdown-theme">
-                <option selected value="" disabled hidden>Choose a company</option>
+            <select name="companyId" ng-model="model.filter.companyId" ng-change="model.filter.page =1;getPaginatedSubscriptions()" class="dropdown-theme">
+                <option selected value="-1" disabled hidden>Choose a company</option>
+                <option ng-repeat="details in model.companies" label="{{details.companyName}}" value="{{details.companyId}}">{{details.companyName}}</option>
             </select>
             <br><br>
         </div>
@@ -122,7 +123,7 @@
                             </td>
                             <td>{{subscriptions.orderDate | date:'dd/MMM/yy'}}</td>
                             <td title="Manage" ng-show="model.subscriptionList.length>0 && model.subscriptionList[0].totalrecords>0">
-                                <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}">
+                                <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyId}}">
                                     <span class="btn-manage"><i class="fa fa-pencil" aria-hidden="true"></i></span>
                                 </a>
                             </td>
@@ -155,7 +156,7 @@
                             <p class="no-margin"><b>No. :</b>{{subscriptions.orderNumber}}</p>
                         </div>
                         <div class="btn-manage-xs">
-                            <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}" class="pull-right">
+                            <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyId}}" class="pull-right">
                                 <span class="btn-manage"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></span>
                             </a>
                         </div>
@@ -195,7 +196,7 @@
         </div>
     </div>
 }
-    @*View for End User*@
+@*View for End User*@
 else
 {
     <div ng-controller="orderCtrl" ng-init='model = @Html.ToJson(Model);getUserSubscriptions();' class="container-fluid" id="order" ng-cloak>
@@ -217,15 +218,7 @@ else
                         <span>Search for Product </span>
                     </div>
                     <div class="row data-body">
-                        @*<div class="col-sm-4 col-xs-12">
-                                <input type="text"
-                                       ng-model="model.filter.domain"
-                                       ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                                       name="domain" class="form-control"
-                                       placeholder="Domain" />
-                            </div>*@
                         <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.productName" ng-enter="model.filter.page =1;getUserSubscriptions()" name="productName" class="form-control" placeholder="Product" /></div>
-                        @*<div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.resellerPO" ng-enter="model.filter.page = 1;getPaginatedSubscriptions()" name="resellerPO" class="form-control" placeholder="ResellerPO" /></div>*@
                     </div>
                     <div class="row data-footer">
                         <center>
@@ -287,7 +280,7 @@ else
                             </td>
                             <td>{{subscriptions.orderDate | date:'dd/MMM/yy'}}</td>
                             <td title="Manage" ng-show="model.subscriptionList.length > 0">
-                                <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}">
+                                <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyId}}">
                                     <span class="btn-manage"><i class="fa fa-pencil" aria-hidden="true"></i></span>
                                 </a>
                             </td>
@@ -313,7 +306,7 @@ else
                             </p>
                         </div>
                         <div class="btn-manage-xs">
-                            <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyName}}" class="pull-right">
+                            <a ng-href="~/order/OrderDetail/{{subscriptions.orderNumber}}/{{model.filter.companyId}}" class="pull-right">
                                 <span class="btn-manage"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></span>
                             </a>
                         </div>
@@ -351,17 +344,17 @@ else
             </section>
             @*<div paging updatemethod="getUserSubscriptions" pageno="model.filter.page" pagesize="@ConfigKeys.PageSize" totalrecords="model.subscriptionList[0].totalrecords" isfixedpagesize="true"></div>*@
         </div>
-            <div ng-cloak>
-                <span  class="text-center ng-cloak" ng-hide="userAuthorized">
-                    <span ng-if="!userNotMapped">@Html.Partial("_Error", "No subscription available to manage at the moment.")</span>
-                    <span ng-if="userNotMapped">@Html.Partial("_Error", "You are not Authorized, Please contact your Administrator.")</span>
-                   
-                </span>
-               
-                @*<h4 class="ng-cloak" ng-cloak>
+        <div ng-cloak>
+            <span class="text-center ng-cloak" ng-hide="userAuthorized">
+                <span ng-if="!userNotMapped">@Html.Partial("_Error", "No subscription available to manage at the moment.")</span>
+                <span ng-if="userNotMapped">@Html.Partial("_Error", "You are not Authorized, Please contact your Administrator.")</span>
+
+            </span>
+
+            @*<h4 class="ng-cloak" ng-cloak>
                     <i class="fa fa-exclamation-triangle ng-cloak" ng-cloak aria-hidden="true"></i>
                     You are not Authorized, Please contact your Administrator.
                 </h4>*@
-            </div>
+        </div>
     </div>
 }
