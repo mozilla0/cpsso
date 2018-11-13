@@ -12,7 +12,7 @@ IF %ERRORLEVEL% == 1 (
 ECHO THERE WAS AN ERROR - to file >> D:\home\LogFiles\kudu\deployment\Config_Data_%APPSETTING_key16%_OutputLog.txt
 ECHO THERE WAS AN ERROR - on screen)
 
-sqlcmd -S %APPSETTING_key1% -d cpssodb -U %APPSETTING_key2% -P "%APPSETTING_key3%" -Q "UPDATE [dbo].[Configs] SET Value ='%APPSETTING_key7%' WHERE Id=23" -o "D:\home\LogFiles\kudu\deployment\UpdateAllowedReseller_OutputLog.txt" -b
+sqlcmd -S %APPSETTING_key1% -d cpssodb -U %APPSETTING_key2% -P %APPSETTING_key3% -i "D:\home\site\wwwroot\DBScripts\AllowedResellerUpdate.sql" -v key7="%APPSETTING_key7%" -o "D:\home\LogFiles\kudu\deployment\UpdateAllowedReseller_OutputLog.txt" -b
 
 sqlcmd -S %APPSETTING_key1% -d cpssodb -U %APPSETTING_key2% -P "%APPSETTING_key3%" -Q "UPDATE [dbo].[Configs] SET Value ='%APPSETTING_key8%' WHERE Id=9" -o "D:\home\LogFiles\kudu\deployment\UpdateClientId_OutputLog.txt" -b
 
