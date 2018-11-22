@@ -25,6 +25,7 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
         Response UpdateCompanies(List<string> companies, LoggedInUserInfo userInfo);
         bool UpdateSubscriptionDetail(List<Dictionary<Guid, SubscriptionDetail>> subscriptions);
         bool SaveMarkup(SubscriptionDetail markup);
+        bool RemoveMarkup(SubscriptionDetail markup);
         bool CheckCompanyTable();
          void addflag();
     }

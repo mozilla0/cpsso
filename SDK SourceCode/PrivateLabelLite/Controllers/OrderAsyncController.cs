@@ -14,6 +14,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using PrivateLabelLite.Entities.Common;
 
 namespace PrivateLabelLite.Controllers
 {
@@ -66,7 +67,7 @@ namespace PrivateLabelLite.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult RefereshOrderDetail(string id,string companyName="")
+        public ActionResult RefereshOrderDetail(string id, string companyName = "")
         {
             LoggedInUserInfo loggedInUser = GetLoggedInUserInfo();
 
@@ -95,58 +96,6 @@ namespace PrivateLabelLite.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public bool RefereshSubscriptionDetail()
-        {
-            bool subResp = false;
-            //Getting all subscriptions for reseller
-            var subscriptions = _partnerApi.GetSubscriptiondetail().Subscriptions;
-            if (subscriptions != null)
-            {
-                subResp =  _companyService.UpdateSubscriptionDetail(subscriptions);
-            }
-
-            //Extracting order numbers of Microsoft only.
-            SubscriptionDetail ordernumbers = new SubscriptionDetail();
-            for (int i = 0; i < subscriptions.Count; i++)
-            {
-                if ((subscriptions[i].Values.FirstOrDefault().VendorName == "Microsoft" && subscriptions[i].Values.FirstOrDefault().LineStatus != "cancelled"))
-                {
-                    var value = subscriptions[i].Values.FirstOrDefault().OrderNumber;
-
-                    if (!ordernumbers.OrderNumbers.Contains(value))
-                    {
-                        ordernumbers.OrderNumbers.Add(value);
-                    }
-
-                }
-            }
-            //Making Order Detail call to get ResellerPO for Microsft Products only.
-            List<OrderDetail> orderDetails = new List<OrderDetail>();
-            foreach (var orderNumber in ordernumbers.OrderNumbers)
-
-            {
-                try
-                {
-                    string orderNum;
-                    orderNum = Convert.ToString(orderNumber);
-                    var orderDetail = _partnerApi.GetOrderDetail(orderNum).OrderInfo;
-                    orderDetails.Add(orderDetail);
-                }
-                catch (Exception)
-                {
-
-                }
-
-            }
-            bool orderResp = _orderService.UpdateOrdersInfo(orderDetails);
-            bool Resp = new bool();
-            if (subResp == true && orderResp == true)
-            {
-                Resp = true;
-            }
-            return Resp;
-           
-        }
         public ActionResult UpdateProducts()
         {
             if (Session["UpdateProducts"] == null)

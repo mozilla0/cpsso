@@ -100,20 +100,17 @@ namespace SubscriptionService1
             Library1.WriteErrorLog("Making Order Detail call to get ResellerPO for Microsft Products only.");
             //Making Order Detail call to get ResellerPO for Microsft Products only.
             List<OrderDetail> orderDetails = new List<OrderDetail>();
-            foreach (var orderNumber in ordernumbers.OrderNumbers)
+            var ordersDetailsResult = _partnerApi.GetOrdersDetails(ordernumbers);
+            foreach (var orderInfoResult in ordersDetailsResult.OrdersInfoResult)
             {
                 try
                 {
-                    string orderNum;
-                    orderNum = Convert.ToString(orderNumber);
-                    var orderDetail = _partnerApi.GetOrderDetail(orderNum).OrderInfo;
-                    orderDetails.Add(orderDetail);
+                    orderDetails.Add(orderInfoResult.OrderInfo);
                 }
                 catch (Exception)
                 {
 
                 }
-
             }
             Library1.WriteErrorLog("Saving orders into Database now.");
             bool orderResp = _orderService.UpdateOrdersInfo(orderDetails);

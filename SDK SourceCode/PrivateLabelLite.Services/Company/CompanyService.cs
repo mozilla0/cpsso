@@ -92,6 +92,10 @@ namespace PrivateLabelLite.Services.Company
         {
              return _companyRepo.SaveMarkup(markup);
         }
+        public bool RemoveMarkup(SubscriptionDetail markup)
+        {
+            return _companyRepo.RemoveMarkup(markup);
+        }
         public bool CheckCompanyTable()
         {
             return _companyRepo.CheckCompanyTable();

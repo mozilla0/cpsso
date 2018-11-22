@@ -120,6 +120,7 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                 StringEscapeHandling = StringEscapeHandling.EscapeHtml,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
+
             foreach (var order in orders)
             {
                 var orderJson = JsonConvert.SerializeObject(order, jsonSerializerSettings);
@@ -134,7 +135,7 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                     orderInfo.CurrencySymbol = order.CurrencySymbol;
                     orderInfo.OrderDate = order.OrderDate;
                     orderInfo.OrderJson = orderJson;
-                    orderInfo.PONumber = order.PONumber;
+                    orderInfo.PONumber = order.ResellerPoNumber;
 
                     foreach (var line in order.Lines)
                     {
@@ -148,14 +149,10 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                             line.CurrencySymbol = line.CurrencySymbol;
                             lineInfo.UnitPrice = line.UnitPrice;
                             lineInfo.ManufacturerPartNumber = line.ManufacturerPartNumber;
-
                             // update domain
-
                             orderInfo.Domain = line.AdditionalData != null && !String.IsNullOrEmpty(line.AdditionalData.Domain) ? line.AdditionalData.Domain : orderInfo.Domain;
                         }
-
                     }
-
                 }
                 else
                 {
@@ -171,14 +168,12 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                             CurrencySymbol = order.CurrencySymbol,
                             CurrencyCode = order.CurrencyCode,
                             Domain = GetDomain(order.Lines),
-                            PONumber = order.PONumber,
+                            PONumber = order.ResellerPoNumber,
                             OrderJson = orderJson
                         });
                     var lines = order.Lines.GroupBy(i => i.SKU).Select(a => a.FirstOrDefault()).ToList();
                     foreach (var line in lines)
                     {
-
-
                         _pllContext.OrderLine.Add(
                         new DataEntities.OrderLine()
                         {
@@ -193,23 +188,11 @@ namespace PrivateLabelLite.Data.Repository.OrderRepo
                             UnitPrice = line.UnitPrice
                         });
                     }
-
                 }
-
             }
-
             // insert 
-            try
-            {
-                _pllContext.SaveChanges();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-
+            _pllContext.SaveChanges();
+            return true;
         }
 
         private string GetDomain(List<PrivateLabelLite.Entities.Order.OrderLine> lines)

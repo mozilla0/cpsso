@@ -5,7 +5,7 @@
     ViewBag.Title = "SalesOrderMapping";
     var Url = Request.Url.AbsolutePath;
 }
-<div ng-controller="companyCtrl" ng-init='model = @Html.ToJson(Model); initMapping();initSubscriptionSuccess = false' class="container-fluid" id="order">
+<div ng-controller="companyCtrl" ng-init='model = @Html.ToJson(Model); initMapping();initSubscriptionSuccess = false;' class="container-fluid" id="order">
     <h3 class="top">
         <span class="btn-manage-xs pull-right hidden-md hidden-lg">
             <a data-toggle="collapse" data-target="#search-xs" class="pull-right" style="width:43px">
@@ -19,144 +19,148 @@
     <div>
         <h3>Sales Order Mapping : <span ng-bind="model.filter.companyName"></span></h3>
         @*<select ng-options="details.companyName as details.companyName for details in model.companies track by details.companyName" name="companyName" ng-model="model.filter.companyName" ng-change="getPaginatedSubscriptions()" placeholder="" class="dropdown-theme">
-            <option value="" selected disabled hidden>Choose a Company</option>
-        </select>*@
+                <option value="" selected disabled hidden>Choose a Company</option>
+            </select>*@
         <select name="companyId" ng-model="model.filter.companyId" ng-change="model.filter.page=1;getPaginatedSubscriptions()" class="dropdown-theme">
-            <option selected value="" disabled hidden>Choose a company</option>
+            <option selected value="-1" disabled hidden>Choose a company</option>
             <option ng-repeat="details in model.companies" label="{{details.companyName}}" value="{{details.companyId}}">{{details.companyName}}</option>
         </select>
         <div class="margin-top10">
-            <button class="btn btn-sm btn-primary" ng-click="SaveMapping()">Save Mapping</button>
+            <button class="btn btn-sm btn-primary" ng-click="SaveMapping()" ng-disabled="!showTableHeading">Save Mapping</button>
             @*<button ng-click="initSubscriptionDetail()" class="btn btn-sm btn-primary pull-right">Get All Subscriptions</button>*@
-            <button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" ng-click="SubscriptionDetailModal()">Get All Subscriptions</button>
+            <button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" ng-click="SubscriptionDetailModal()">Refresh All Data</button>
         </div>
         <br>
     </div>
-    @*Search bar for mobile view*@
-    <section class="row hidden-md hidden-lg data-card collapse" id="search-xs">
-        <div class="col-xs-12">
-            <div class="row data-head">
-                <span>Search for Domain, Product and ResellerPO</span>
-            </div>
-            <div class="row data-body">
-                <div class="col-sm-4 col-xs-12">
-                    <input type="text"
-                           ng-model="model.filter.domain"
-                           ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                           name="domain" class="form-control"
-                           placeholder="Domain" />
+    <div ng-show="showTableHeading==true">
+        @*Search bar for mobile view*@
+        <section class="row hidden-md hidden-lg data-card collapse" id="search-xs">
+            <div class="col-xs-12">
+                <div class="row data-head">
+                    <span>Search for Domain, Product and ResellerPO</span>
                 </div>
-                <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.productName" ng-enter="model.filter.page =1;getPaginatedSubscriptions()" name="productName" class="form-control" placeholder="Product" /></div>
-                <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.resellerPO" ng-enter="model.filter.page = 1;getPaginatedSubscriptions()" name="resellerPO" class="form-control" placeholder="ResellerPO" /></div>
+                <div class="row data-body">
+                    <div class="col-sm-4 col-xs-12">
+                        <input type="text"
+                               ng-model="model.filter.domain"
+                               ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                               name="domain" class="form-control"
+                               placeholder="Domain" />
+                    </div>
+                    <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.productName" ng-enter="model.filter.page =1;getPaginatedSubscriptions()" name="productName" class="form-control" placeholder="Product" /></div>
+                    <div class="col-sm-4 col-xs-12"><input type="text" ng-model="model.filter.resellerPO" ng-enter="model.filter.page = 1;getPaginatedSubscriptions()" name="resellerPO" class="form-control" placeholder="ResellerPO" /></div>
+                </div>
+                <div class="row data-footer">
+                    <center>
+                        <button class="btn btn-sm bg-theme-color" ng-click="hideSearchBar();getPaginatedSubscriptions()" style="border-radius:20px"><b> Go &nbsp; &rarr;</b></button>
+                    </center>
+                </div>
             </div>
-            <div class="row data-footer">
-                <center>
-                    <button class="btn btn-sm bg-theme-color" ng-click="hideSearchBar();getPaginatedSubscriptions()" style="border-radius:20px"><b> Go &nbsp; &rarr;</b></button>
-                </center>
-            </div>
+        </section>
+
+        @*Desktop View*@
+        <div class="row table-responsive hidden-sm hidden-xs" style="min-height:350px">
+            <table class="table table-hover hidden-sm hidden-xs">
+                @*Table headings*@
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="search-th">
+                            <input type="text" ng-model="model.filter.domain" ng-change="getPaginatedSubscriptions()"
+                                   ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                   class="bg-theme-color no-focus-line" placeholder="Domain" />
+                            <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
+                        </th>
+                        <th class="search-th">
+                            <input type="text" ng-model="model.filter.orderNumber" ng-change="getPaginatedSubscriptions()"
+                                   ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                   class="bg-theme-color no-focus-line" placeholder="Order" />
+                            <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
+                        </th>
+                        <th class="search-th">
+                            <input type="text" ng-model="model.filter.productName" ng-change="getPaginatedSubscriptions()"
+                                   ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                   class="bg-theme-color no-focus-line" placeholder="Product" />
+                            <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
+                        </th>
+                        <th class="search-th">
+                            <input type="text" ng-model="model.filter.resellerPO" ng-change="getPaginatedSubscriptions()"
+                                   ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
+                                   class="bg-theme-color no-focus-line" placeholder="ResellerPO" />
+                            <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
+                        </th>
+                        <th>SKU</th>
+                        <th>Quantity</th>
+                        <th>Map</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @*Starting of table DATA*@
+                    <tr ng-repeat="subscriptions in model.subscriptionList">
+                        <td><input type="hidden" ng-bind="subscriptions.subscriptionId" /></td>
+                        <td ng-bind="subscriptions.additionalData.domain"></td>
+                        <td ng-bind="subscriptions.orderNumber" ng-model="subscription.orderNumber"></td>
+                        <td ng-bind="subscriptions.name"></td>
+                        <td ng-bind="subscriptions.poNumber"></td>
+                        <td ng-bind="subscriptions.sku"></td>
+                        <td ng-bind="subscriptions.quantity"></td>
+                        <td><input type="checkbox" ng-model="subscriptions.mapping" ng-checked="subscriptions.mappingStatus=='MAPPED'" ng-click="subscriptions.changedStatus = true" /></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </section>
 
-    @*Desktop View*@
-    <div class="row table-responsive hidden-sm hidden-xs" style="min-height:350px">
-        <table class="table table-hover hidden-sm hidden-xs">
-            @*Table headings*@
-            <thead>
-                <tr>
-                    <th></th>
-                    <th class="search-th">
-                        <input type="text" ng-model="model.filter.domain" ng-change="getPaginatedSubscriptions()"
-                               ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                               class="bg-theme-color no-focus-line" placeholder="Domain" />
-                        <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
-                    </th>
-                    <th class="search-th">
-                        <input type="text" ng-model="model.filter.orderNumber" ng-change="getPaginatedSubscriptions()"
-                               ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                               class="bg-theme-color no-focus-line" placeholder="Order" />
-                        <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
-                    </th>
-                    <th class="search-th">
-                        <input type="text" ng-model="model.filter.productName" ng-change="getPaginatedSubscriptions()"
-                               ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                               class="bg-theme-color no-focus-line" placeholder="Product" />
-                        <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
-                    </th>
-                    <th class="search-th">
-                        <input type="text" ng-model="model.filter.resellerPO" ng-change="getPaginatedSubscriptions()"
-                               ng-enter="model.filter.page =1;getPaginatedSubscriptions()"
-                               class="bg-theme-color no-focus-line" placeholder="ResellerPO" />
-                        <i class="fa fa-search search" aria-hidden="true" ng-click="model.filter.page = 1;getPaginatedSubscriptions()"></i>
-                    </th>
-                    <th>SKU</th>
-                    <th>Quantity</th>
-                    <th>Map</th>
-                </tr>
-            </thead>
-            <tbody>
-                @*Starting of table DATA*@
-                <tr ng-repeat="subscriptions in model.subscriptionList">
-                    <td><input type="hidden" ng-bind="subscriptions.subscriptionId" /></td>
-                    <td ng-bind="subscriptions.additionalData.domain"></td>
-                    <td ng-bind="subscriptions.orderNumber" ng-model="subscription.orderNumber"></td>
-                    <td ng-bind="subscriptions.name"></td>
-                    <td ng-bind="subscriptions.poNumber"></td>
-                    <td ng-bind="subscriptions.sku"></td>
-                    <td ng-bind="subscriptions.quantity"></td>
-                    <td><input type="checkbox" ng-model="subscriptions.mapping" ng-checked="subscriptions.mappingStatus=='MAPPED'" ng-click="subscriptions.changedStatus = true" /></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    @*Mobile View*@
-    <section class="row hidden-md hidden-lg data-card" ng-repeat="subscriptions in model.subscriptionList">
-        <div class="col-xs-12">
-            <div class="row data-head">
-                @*<div class="col-xs-6 no-padding">
+        @*Mobile View*@
+        <section class="row hidden-md hidden-lg data-card" ng-repeat="subscriptions in model.subscriptionList">
+            <div class="col-xs-12">
+                <div class="row data-head">
+                    @*<div class="col-xs-6 no-padding">
+                            <p class="no-margin">
+                                <b>Order Status : &nbsp;</b><span title="{{subscriptions.orderStatus}}" ng-class="{'text-red':subscriptions.status=='Cancelled','text-green':subscriptions.status=='Complete'}" class="text-center">
+                                    <i ng-class="{'fa-times-circle':subscriptions.status=='Cancelled','fa-clock-o':subscriptions.status=='Open','fa-check-circle':subscriptions.status=='Complete'}" class="fa text-center" aria-hidden="true"></i>
+                                </span>
+                            </p>
+                        </div>*@
+                    <div class="col-xs-6 no-padding">
+                        <p class="no-margin"><b>No. :</b>{{subscriptions.orderNumber}}</p>
+                    </div>
+                    <div class="col-xs-6 no-padding">
+                        <input type="checkbox" class="pull-right" ng-model="subscriptions.mapping" ng-checked="subscriptions.mappingStatus=='MAPPED'" ng-click="subscriptions.changedStatus = true" />
+                    </div>
+                </div>
+                <div class="row data-body">
+                    @*<p><b class="col-xs-4 no-padding">Purchased On :</b> {{subscriptions.orderDate | date:'dd/MMM/yy'}}</p>*@
+                    <p><b class="col-xs-4 no-padding">Domain :</b> {{subscriptions.additionalData.domain}}</p>
+                    <p><b class="col-xs-4 no-padding">ResellerPO :</b> {{subscriptions.poNumber}}</p>
+                </div>
+                <div class="row data-footer">
+                    <div class="col-xs-7 no-padding">
+                        <label class="no-margin">Product(s)</label>
+                        <p class="no-margin">{{subscriptions.name}}</p>
+                    </div>
+                    <div class="col-xs-3 no-padding">
+                        <label class="no-margin">SKU</label>
                         <p class="no-margin">
-                            <b>Order Status : &nbsp;</b><span title="{{subscriptions.orderStatus}}" ng-class="{'text-red':subscriptions.status=='Cancelled','text-green':subscriptions.status=='Complete'}" class="text-center">
-                                <i ng-class="{'fa-times-circle':subscriptions.status=='Cancelled','fa-clock-o':subscriptions.status=='Open','fa-check-circle':subscriptions.status=='Complete'}" class="fa text-center" aria-hidden="true"></i>
-                            </span>
-                        </p>
-                    </div>*@
-                <div class="col-xs-6 no-padding">
-                    <p class="no-margin"><b>No. :</b>{{subscriptions.orderNumber}}</p>
-                </div>
-                <div class="col-xs-6 no-padding">
-                    <input type="checkbox" class="pull-right" ng-model="subscriptions.mapping" ng-checked="subscriptions.mappingStatus=='MAPPED'" ng-click="subscriptions.changedStatus = true" />
-                </div>
-            </div>
-            <div class="row data-body">
-                @*<p><b class="col-xs-4 no-padding">Purchased On :</b> {{subscriptions.orderDate | date:'dd/MMM/yy'}}</p>*@
-                <p><b class="col-xs-4 no-padding">Domain :</b> {{subscriptions.additionalData.domain}}</p>
-                <p><b class="col-xs-4 no-padding">ResellerPO :</b> {{subscriptions.poNumber}}</p>
-            </div>
-            <div class="row data-footer">
-                <div class="col-xs-7 no-padding">
-                    <label class="no-margin">Product(s)</label>
-                    <p class="no-margin">{{subscriptions.name}}</p>
-                </div>
-                <div class="col-xs-3 no-padding">
-                    <label class="no-margin">SKU</label>
-                    <p class="no-margin">
-                        {{subscriptions.sku}} &nbsp;<span title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active') }" class="no-padding text-center">
-                            <i ng-class="{'fa-times-circle':subscriptions.lineStatus=='cancelled',
+                            {{subscriptions.sku}} &nbsp;<span title="{{subscriptions.lineStatus }}" ng-class="{'text-red':subscriptions.lineStatus=='cancelled','text-green':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active') }" class="no-padding text-center">
+                                <i ng-class="{'fa-times-circle':subscriptions.lineStatus=='cancelled',
                                                    'fa-spinner fa-spin no-padding':line.lineStatus=='processing',
                                                    'fa-check-circle':(subscriptions.lineStatus=='completed' || subscriptions.lineStatus=='active'),
                                                    'fa-times-circle':subscriptions.lineStatus=='inactive', 'fa-hourglass-half':subscriptions.lineStatus=='pending' }" class="fa" aria-hidden="true"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-xs-2 no-padding">
+                        <span class="pull-right">
+                            <label class="no-margin">Qty</label>
+                            <p class="no-margin text-right">{{ subscriptions.quantity }}</p>
                         </span>
-                    </p>
-                </div>
-                <div class="col-xs-2 no-padding">
-                    <span class="pull-right">
-                        <label class="no-margin">Qty</label>
-                        <p class="no-margin text-right">{{ subscriptions.quantity }}</p>
-                    </span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+        @*PAGING*@
+        <div paging updatemethod="getPaginatedSubscriptions" pageno="model.filter.page" pagesize="@ConfigKeys.PageSize" totalrecords="model.subscriptionList[0].totalrecords" isfixedpagesize="true"></div>
+    </div>
     <div id="successModal" class="modal fade" data-toggle="modal" role="dialog">
         <div class="modal-dialog">
 
@@ -199,6 +203,4 @@
 
         </div>
     </div>
-    @*PAGING*@
-    <div paging updatemethod="getPaginatedSubscriptions" pageno="model.filter.page" pagesize="@ConfigKeys.PageSize" totalrecords="model.subscriptionList[0].totalrecords" isfixedpagesize="true"></div>
 </div>

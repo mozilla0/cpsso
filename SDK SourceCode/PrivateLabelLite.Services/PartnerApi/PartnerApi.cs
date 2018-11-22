@@ -166,18 +166,31 @@ namespace PrivateLabelLite.Services.PartnerApi
 
         public CustomersDetail GetAllCustomers()
         {
+            var headers = GenerateAuthorizationHeaders();
+            var customerSearchURL = ConfigKeys.CustomerSearchURL;
             EndCustomerFilter filter = new EndCustomerFilter()
             {
                 Page = 1
             };
-            var customers = Post<CustomersDetail>(ConfigKeys.CustomerSearchURL, GenerateAuthorizationHeaders(), filter);
+            var customers = Post<CustomersDetail>(customerSearchURL, headers, filter);
             for (int i = 2; i <= customers.TotalPages; i++)
             {
                 filter.Page = i;
-                var nextPage = Post<CustomersDetail>(ConfigKeys.CustomerSearchURL, GenerateAuthorizationHeaders(), filter);
+                var nextPage = Post<CustomersDetail>(customerSearchURL, headers, filter);
                 customers.EndCustomersDetails.AddRange(nextPage.EndCustomersDetails);
             }
             return customers;
+        }
+
+        public List<string> GetAllCompanies()
+        {
+            var customer = GetAllCustomers();
+            var companies = new List<string>();
+            if (customer != null && customer.EndCustomersDetails != null)
+            {
+                companies = customer.EndCustomersDetails.Select(x => x.CompanyName).Distinct().ToList();
+            }
+            return companies;
         }
 
         public Entities.Order.OrderSearchResult GetOrders(Entities.Order.OrderFilter filter)
@@ -203,21 +216,43 @@ namespace PrivateLabelLite.Services.PartnerApi
             return Get<Entities.Order.OrderDetailResult>(orderDetailUrl, GenerateAuthorizationHeaders());
         }
 
+        public Entities.Order.OrdersDetailsResult GetOrdersDetails(SubscriptionDetail subscriptionDetail)
+        {
+            var ordersDetailsResult = new Entities.Order.OrdersDetailsResult()
+            {
+                OrdersInfoResult = new List<Entities.Order.OrderDetailResult>()
+            };
+            var headers = GenerateAuthorizationHeaders();
+            var orderDetailUrl = ConfigKeys.OrderDetailUrl ?? "";
+            string getOrderUrls = "";
+            foreach (var orderNumber in subscriptionDetail.OrderNumbers)
+            {
+                getOrderUrls = orderDetailUrl.LastIndexOf('/') == (orderDetailUrl.Length - 1) ? orderDetailUrl + orderNumber : orderDetailUrl + "/" + orderNumber;
+                var orderInfo = Get<Entities.Order.OrderDetailResult>(getOrderUrls, headers);
+                if (orderInfo != null)
+                    ordersDetailsResult.OrdersInfoResult.Add(orderInfo);
+            }
+            return ordersDetailsResult;
+        }
+
         public Entities.Subsciptions.SubscriptionDetailResult GetSubscriptiondetail()
         {
             var subscriptionSearchUrl = ConfigKeys.SubscriptionSearchUrl ?? "";
-            subscriptionSearchUrl = subscriptionSearchUrl + 1;
-            var subscriptions =  Get<SubscriptionDetailResult>(subscriptionSearchUrl, GenerateAuthorizationHeaders());
+            var headers = GenerateAuthorizationHeaders();
+            var searchUrl = subscriptionSearchUrl + 1;
+            var subscriptions = Get<SubscriptionDetailResult>(searchUrl, headers);
             var totalPages = subscriptions.totalPages;
-            for (int i = 1; i < totalPages+1; i++)
+            for (int i = 2; i <= totalPages; i++)
             {
-                subscriptionSearchUrl = ConfigKeys.SubscriptionSearchUrl ?? "";
-                subscriptionSearchUrl = subscriptionSearchUrl + i;
-                var temp = Get<SubscriptionDetailResult>(subscriptionSearchUrl, GenerateAuthorizationHeaders());
-                subscriptions.Subscriptions.AddRange(temp.Subscriptions);
+                searchUrl = subscriptionSearchUrl + i;
+                var temp = Get<SubscriptionDetailResult>(searchUrl, headers);
+                if (temp != null)
+                {
+                    if (temp.Subscriptions != null)
+                        subscriptions.Subscriptions.AddRange(temp.Subscriptions);
+                }
             }
             return subscriptions;
-
         }
 
         public Entities.Order.ModifyOrderAddonsResult ModifyOrderAddOns(Entities.Order.ModifyOrderAddons modifiedAddOns)

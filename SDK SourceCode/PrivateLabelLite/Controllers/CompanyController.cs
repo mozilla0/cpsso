@@ -95,7 +95,8 @@ namespace PrivateLabelLite.Controllers
             var companyFilter = new CompanyOrderFilter()
             {
                 Page = 1,
-                RecordsPerPage = ConfigKeys.PageSize
+                RecordsPerPage = ConfigKeys.PageSize,
+                CompanyId = -1
             };
             var subscriptionList = _companyService.GetSubscriptionDetail(companyFilter);
 
@@ -193,11 +194,15 @@ namespace PrivateLabelLite.Controllers
                 // get order details from api// order 
                 List<OrderDetail> orderDetails = new List<OrderDetail>();
                 order.SalesOrderIdCSV = "";
-                foreach (var orderNumber in salesOrderIds)
+                SubscriptionDetail ordernumbers = new SubscriptionDetail();
+                ordernumbers.OrderNumbers = new List<string>(salesOrderIds);
+                var ordersDetails = _partnerApi.GetOrdersDetails(ordernumbers);
+                foreach (var ordersInfoResult in ordersDetails.OrdersInfoResult)
                 {
+                    var orderNumber = ordersInfoResult.OrderInfo.OrderNumber;
                     try
                     {
-                        var orderDetail = _partnerApi.GetOrderDetail(orderNumber).OrderInfo;
+                        var orderDetail = ordersInfoResult.OrderInfo;
                         _orderService.RemoveUnknownMSProductsAndUpdateMissingInfoFromDb(orderDetail);
                         if (orderDetail != null)
                         {
@@ -212,7 +217,6 @@ namespace PrivateLabelLite.Controllers
 
                 }
                 _orderService.UpdateOrdersInfo(orderDetails);
-
             }
             var resp = new Response()
             {
@@ -282,24 +286,83 @@ namespace PrivateLabelLite.Controllers
         [HttpPost]
         public ActionResult RefreshCompanyList()
         {
-            var customer = _partnerApi.GetAllCustomers();
-
-            var companies = new List<string>();
-            if (customer != null && customer.EndCustomersDetails != null)
+            var resp = new Response();
+            try
             {
-                companies = customer.EndCustomersDetails.Select(x => x.CompanyName).Distinct().ToList();
+                var companies = _partnerApi.GetAllCompanies();
+                resp = _companyService.UpdateCompanies(companies, GetLoggedInUserInfo());
+                resp.Data = _companyService.GetCompanies(new CompanyFilter());
             }
-            var resp = _companyService.UpdateCompanies(companies, GetLoggedInUserInfo());
-            resp.Data = _companyService.GetCompanies(new CompanyFilter());
+            catch (Exception ex)
+            {
+                resp.IsValid = false;
+                resp.Message = ex.Message;
+            }
             return Json(resp, JsonRequestBehavior.DenyGet);
         }
 
         [HttpGet]
         public ActionResult UpdateSubscription()
         {
-            var response = RedirectToAction("RefereshSubscriptionDetail", "OrderAsync");
-            return response;
+            var response = new Response();
+            try
+            {
+                //Getting all subscriptions for reseller
+                bool subResp = false;
+                var subscriptions = _partnerApi.GetSubscriptiondetail().Subscriptions;
+                if (subscriptions != null)
+                {
+                    subResp = _companyService.UpdateSubscriptionDetail(subscriptions);
+                }
+
+                //Extracting order numbers of Microsoft only.
+                SubscriptionDetail ordernumbers = new SubscriptionDetail();
+                for (int i = 0; i < subscriptions.Count; i++)
+                {
+                    if ((subscriptions[i].Values.FirstOrDefault().VendorName == "Microsoft" && subscriptions[i].Values.FirstOrDefault().LineStatus != "cancelled"))
+                    {
+                        var value = subscriptions[i].Values.FirstOrDefault().OrderNumber;
+
+                        if (!ordernumbers.OrderNumbers.Contains(value))
+                        {
+                            ordernumbers.OrderNumbers.Add(value);
+                        }
+                    }
+                }
+
+                //Making Order Detail call to get ResellerPO for Microsft Products only.
+                bool orderResp = false;
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+                var ordersDetailsResult = _partnerApi.GetOrdersDetails(ordernumbers);
+                orderDetails = ordersDetailsResult.OrdersInfoResult.Select(x => x.OrderInfo).ToList();
+                if (orderDetails != null)
+                {
+                    orderResp = _orderService.UpdateOrdersInfo(orderDetails);
+                }
+
+                //Getting All Companies
+                var companies = _partnerApi.GetAllCompanies();
+                var compResp = _companyService.UpdateCompanies(companies, GetLoggedInUserInfo());
+
+                if (subResp == true && orderResp == true && compResp.IsValid == true)
+                {
+                    response.IsValid = true;
+                    response.Message = "Data Refreshed Successfully !!!";
+                }
+                else
+                {
+                    response.IsValid = false;
+                    response.Message = "Update Subscriptions " + (subResp == true ? "Success" : "Failure") + " Update Orders" + (orderResp == true ? "Success" : "Failure") + " Update Companies" + (compResp.IsValid == true ? "Success" : "Failure");
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsValid = false;
+                response.Message = ex.Message;
+            }
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
+
         public bool checkDatabase()
         {
             var response = _orderService.checkDatabase();
@@ -314,7 +377,8 @@ namespace PrivateLabelLite.Controllers
             {
                 Page = 1,
                 RecordsPerPage = ConfigKeys.PageSize,
-                EditProductStatus = false
+                EditProductStatus = false,
+                CompanyId = -1
             };
             var subscriptionList = _companyService.GetSubscriptionDetail(companyFilter);
 
@@ -335,6 +399,12 @@ namespace PrivateLabelLite.Controllers
         {
             var markups = Mapper.Map<SubscriptionDetailModel, SubscriptionDetail>(markup);
             return _companyService.SaveMarkup(markups);
+        }
+
+        public bool RemoveMarkup(SubscriptionDetailModel markup)
+        {
+            var markups = Mapper.Map<SubscriptionDetailModel, SubscriptionDetail>(markup);
+            return _companyService.RemoveMarkup(markups);
         }
 
         public bool CheckCompanyTable()

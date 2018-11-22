@@ -61,7 +61,7 @@
 
             },
 
-          
+
             deleteEndUserMapping: function (user) {
                 return $http({
                     url: BASE_URL + 'company/deleteEndUserMapping',
@@ -109,7 +109,7 @@
                 });
             },
             saveMarkup: function (markup) {
-                return $http.post(BASE_URL + 'company/saveMarkup',markup).then(function (data) {
+                return $http.post(BASE_URL + 'company/saveMarkup', markup).then(function (data) {
                     return data;
                 });
             },
@@ -117,8 +117,12 @@
                 return $http.post(BASE_URL + 'company/checkCompanyTable').then(function (data) {
                     return data;
                 })
+            },
+            removeMarkup: function (company) {
+                return $http.post(BASE_URL + 'company/removeMarkup', company).then(function (data) {
+                    return data;
+                });
             }
-
         };
     };
 })();

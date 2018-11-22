@@ -21,6 +21,7 @@ namespace PrivateLabelLite.Services.PartnerApi
         OrderSearchResult GetOrders(OrderFilter filter);
         ModifyOrderResult ModifyOrder(ModifyOrder modifiedOrder);
         OrderDetailResult GetOrderDetail(string orderNumber);
+        OrdersDetailsResult GetOrdersDetails(SubscriptionDetail ordernumbers);
         SubscriptionDetailResult GetSubscriptiondetail();
         ModifyOrderAddonsResult ModifyOrderAddOns(ModifyOrderAddons modifiedAddOns);
         VendorList GetVendors();
@@ -28,6 +29,7 @@ namespace PrivateLabelLite.Services.PartnerApi
         VendorCatalogSearchResult GetAllProductsByVendor(VendorCatalogSearch filter);
         Entities.Product.Catalogue GetMicrosoftVendorCatalogue(); 
         CustomersDetail GetAllCustomers();
+        List<string> GetAllCompanies();
         Lines GetProductPriceInfo(List<Lines> lines);
     }
 }
