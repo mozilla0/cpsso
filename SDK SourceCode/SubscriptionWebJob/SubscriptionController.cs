@@ -65,26 +65,20 @@ namespace SubscriptionWebJob
 
                 }
             }
-
-
             //Making Order Detail call to get ResellerPO for Microsft Products only.
             List<OrderDetail> orderDetails = new List<OrderDetail>();
-            foreach (var orderNumber in ordernumbers.OrderNumbers)
+            var ordersDetailsResult = _partnerApi.GetOrdersDetails(ordernumbers);
+            foreach (var orderInfoResult in ordersDetailsResult.OrdersInfoResult)
             {
                 try
                 {
-                    string orderNum;
-                    orderNum = Convert.ToString(orderNumber);
-                    var orderDetail = _partnerApi.GetOrderDetail(orderNum).OrderInfo;
-                    orderDetails.Add(orderDetail);
+                    orderDetails.Add(orderInfoResult.OrderInfo);
                 }
                 catch (Exception)
                 {
 
                 }
-
             }
-
             bool orderResp = _orderService.UpdateOrdersInfo(orderDetails);
         }
         private void Initialise()

@@ -233,19 +233,13 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
         {
             var response = new Response();
             var xml = new XElement("Companies");
-            try
+
+            foreach (var company in companies)
             {
-                foreach (var company in companies)
-                {
-                    xml.Add(new XElement("Company", company));
-                }
-                _pllContext.procXmlInsertCompanies(xml.ToString(), userInfo.Email);
-                response.IsValid = true;
+                xml.Add(new XElement("Company", company));
             }
-            catch (Exception)
-            {
-                response.IsValid = false;
-            }
+            _pllContext.procXmlInsertCompanies(xml.ToString(), userInfo.Email);
+            response.IsValid = true;
             return response;
         }
         public Response DeleteCompanyOrderMapping(List<decimal> recordIds)
@@ -378,12 +372,8 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                     {
                         subscriptionList.Add(value);
                     }
-
-
-
                 }
             }
-
 
             foreach (var subscription in subscriptionList)
             {
@@ -393,7 +383,6 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                 skuName = skuName.Length >= 50 ? subscription.Name.Substring(0, 50) : subscription.Name;
                 if (subscriptionInfo != null)
                 {
-
                     subscriptionInfo.VendorId = subscription.VendorId;
                     subscriptionInfo.VendorName = subscription.VendorName;
                     subscriptionInfo.SKU = subscription.SKU;
@@ -415,14 +404,9 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                     subscriptionInfo.MsSubscriptionId = subscription.AdditionalData != null ? GetMsSubscriptionId(subscription.AdditionalData) : string.Empty;
                     subscriptionInfo.MicrosoftId = subscription.AdditionalData != null ? GetMicrosoftId(subscription.AdditionalData) : string.Empty;
                     subscriptionInfo.SubscriptionHistoryJson = historyJson;
-                    //subscriptionInfo.SubscriptionId = subscription.SubscriptionId;
-                    System.Diagnostics.Debug.WriteLine(subscription.SKU);
-                    System.Diagnostics.Debug.WriteLine(subscription.OrderNumber);
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine(subscription.SKU);
-                    System.Diagnostics.Debug.WriteLine(subscription.OrderNumber);
                     _pllContext.SubscriptionSummaryDetail.Add(new SubscriptionSummaryDetail()
                     {
                         OrderNumber = subscription.OrderNumber != null ? subscription.OrderNumber : "",
@@ -449,40 +433,32 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                         SubscriptionHistoryJson = historyJson != null ? historyJson : string.Empty,
                         SubscriptionId = subscription.SubscriptionId,
                         MappingStatus = "NOT MAPPED"
-
-
                     });
                 }
             }
-            try
-            {
-                _pllContext.SaveChanges();
-                return true;
-            }
-            catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
-            {
-                Exception raise = dbEx;
+            _pllContext.SaveChanges();
+            return true;
+            //catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
+            //{
+            //    Exception raise = dbEx;
 
-                foreach (var validationErrors in dbEx.EntityValidationErrors)
-                {
-                    string entityTypeName = validationErrors.Entry.Entity.GetType().Name;
+            //    foreach (var validationErrors in dbEx.EntityValidationErrors)
+            //    {
+            //        string entityTypeName = validationErrors.Entry.Entity.GetType().Name;
 
-                    foreach (var validationError in validationErrors.ValidationErrors)
-                    {
-                        string message = string.Format("{0}:{1}:{2}:{3}",
-                            validationErrors.Entry.Entity.ToString(),
-                            validationError.ErrorMessage, entityTypeName, validationError.PropertyName);
-                        // raise a new exception nesting
-                        // the current instance as InnerException
-                        raise = new InvalidOperationException(message, raise);
-                    }
-                }
-                throw raise;
-            }
-
-
+            //        foreach (var validationError in validationErrors.ValidationErrors)
+            //        {
+            //            string message = string.Format("{0}:{1}:{2}:{3}",
+            //                validationErrors.Entry.Entity.ToString(),
+            //                validationError.ErrorMessage, entityTypeName, validationError.PropertyName);
+            //            // raise a new exception nesting
+            //            // the current instance as InnerException
+            //            raise = new InvalidOperationException(message, raise);
+            //        }
+            //    }
+            //    throw raise;
+            //}
         }
-
 
         public bool SaveMarkup(SubscriptionDetail markup)
         {
@@ -493,14 +469,21 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                     var orders = _pllContext.SubscriptionSummaryDetail;
                     foreach (var order in orders)
                     {
-                        order.MarkUpPercentage = markup.MarkUpPercentage;
-                        order.SeatLimit = markup.SeatLimit;
-                        order.TemporarySeatLimit = markup.SeatLimit;
-                        double unitPrice = Convert.ToDouble(order.UnitPrice);
-                        order.SalesPrice = unitPrice + ((markup.MarkUpPercentage / 100) * (unitPrice));
-                        order.TaxStatus = markup.TaxStatus;
-                        //order.SeatLimitStartTime = DateTime.Now;
-                        //order.SeatLimitEndTime = DateTime.Now.AddHours(24);
+                        if (markup.MarkUpPercentage != null)
+                        {
+                            order.MarkUpPercentage = markup.MarkUpPercentage;
+                            double unitPrice = Convert.ToDouble(order.UnitPrice);
+                            order.SalesPrice = unitPrice + ((markup.MarkUpPercentage / 100) * (unitPrice));
+                        }
+                        if (markup.SeatLimit != null)
+                        {
+                            order.SeatLimit = markup.SeatLimit;
+                            order.TemporarySeatLimit = markup.SeatLimit;
+                        }
+                        if (markup.TaxStatus != null)
+                        {
+                            order.TaxStatus = markup.TaxStatus;
+                        }
                         order.SeatCounter = 0;
                     };
                 }
@@ -509,14 +492,21 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                     var orders = _pllContext.SubscriptionSummaryDetail.Where(x => x.Company == markup.Company);
                     foreach (var order in orders)
                     {
-                        order.MarkUpPercentage = markup.MarkUpPercentage;
-                        order.SeatLimit = markup.SeatLimit;
-                        order.TemporarySeatLimit = markup.SeatLimit;
-                        double unitPrice = Convert.ToDouble(order.UnitPrice);
-                        order.SalesPrice = unitPrice + ((markup.MarkUpPercentage / 100) * (unitPrice));
-                        order.TaxStatus = markup.TaxStatus;
-                        //order.SeatLimitStartTime = DateTime.Now;
-                        //order.SeatLimitEndTime = DateTime.Now.AddHours(24);
+                        if (markup.MarkUpPercentage != null)
+                        {
+                            order.MarkUpPercentage = markup.MarkUpPercentage;
+                            double unitPrice = Convert.ToDouble(order.UnitPrice);
+                            order.SalesPrice = unitPrice + ((markup.MarkUpPercentage / 100) * (unitPrice));
+                        }
+                        if (markup.SeatLimit != null)
+                        {
+                            order.SeatLimit = markup.SeatLimit;
+                            order.TemporarySeatLimit = markup.SeatLimit;
+                        }
+                        if (markup.TaxStatus != null)
+                        {
+                            order.TaxStatus = markup.TaxStatus;
+                        }
                         order.SeatCounter = 0;
                     };
                 }
@@ -527,15 +517,78 @@ namespace PrivateLabelLite.Data.Repository.CompanyRepo
                 var orders = _pllContext.SubscriptionSummaryDetail.Where(x => x.OrderNumber == markup.OrderNumber && x.SKU == markup.SKU && x.SubscriptionId == markup.SubscriptionId);
                 foreach (var order in orders)
                 {
-                    order.MarkUpPercentage = markup.MarkUpPercentage;
-                    order.SeatLimit = markup.SeatLimit;
-                    order.TemporarySeatLimit = markup.SeatLimit;
-                    double unitPrice = Convert.ToDouble(order.UnitPrice);
-                    order.SalesPrice = unitPrice + ((markup.MarkUpPercentage / 100) * (unitPrice));
-                    order.TaxStatus = markup.TaxStatus;
-                    //order.SeatLimitStartTime = DateTime.Now;
-                    //order.SeatLimitEndTime = DateTime.Now.AddHours(24);
+                    if (markup.MarkUpPercentage != null)
+                    {
+                        order.MarkUpPercentage = markup.MarkUpPercentage;
+                        double unitPrice = Convert.ToDouble(order.UnitPrice);
+                        order.SalesPrice = unitPrice + ((markup.MarkUpPercentage / 100) * (unitPrice));
+                    }
+                    if (markup.SeatLimit != null)
+                    {
+                        order.SeatLimit = markup.SeatLimit;
+                        order.TemporarySeatLimit = markup.SeatLimit;
+                    }
+                    if (markup.TaxStatus != null)
+                    {
+                        order.TaxStatus = markup.TaxStatus;
+                    }
                     order.SeatCounter = 0;
+                };
+            }
+            try
+            {
+                _pllContext.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+        public bool RemoveMarkup(SubscriptionDetail markup)
+        {
+            if (String.IsNullOrEmpty(markup.OrderNumber) && String.IsNullOrEmpty(markup.SKU))
+            {
+                if (markup.Company == "ALL")
+                {
+                    var orders = _pllContext.SubscriptionSummaryDetail;
+                    foreach (var order in orders)
+                    {
+                        order.MarkUpPercentage = null;
+                        order.SalesPrice = null;
+                        order.SeatLimit = null;
+                        order.TemporarySeatLimit = null;
+                        order.TaxStatus = null;
+                        order.SeatCounter = null;
+                    };
+                }
+                else
+                {
+                    var orders = _pllContext.SubscriptionSummaryDetail.Where(x => x.Company == markup.Company);
+                    foreach (var order in orders)
+                    {
+                        order.MarkUpPercentage = null;
+                        order.SalesPrice = null;
+                        order.SeatLimit = null;
+                        order.TemporarySeatLimit = null;
+                        order.TaxStatus = null;
+                        order.SeatCounter = null;
+                    };
+                }
+
+            }
+            else
+            {
+                var orders = _pllContext.SubscriptionSummaryDetail.Where(x => x.OrderNumber == markup.OrderNumber && x.SKU == markup.SKU && x.SubscriptionId == markup.SubscriptionId);
+                foreach (var order in orders)
+                {
+                    order.MarkUpPercentage = null;
+                    order.SalesPrice = null;
+                    order.SeatLimit = null;
+                    order.TemporarySeatLimit = null;
+                    order.TaxStatus = null;
+                    order.SeatCounter = null;
                 };
             }
             try

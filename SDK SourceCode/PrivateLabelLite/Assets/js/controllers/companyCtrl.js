@@ -12,6 +12,9 @@
         $scope.showTableHeading = false;
         $scope.company = null;
         $scope.subsCompanyId = null;
+        $scope.saveCompanyLevelMarkUpMessage = "Are you sure you want to perform this update?";
+        $scope.saveMarkUpType = 1;
+        $scope.removeMarkupModel = { company: null };
         $scope.showEndUserPopup = function () {
             $scope.model.user = { email: '' };
             $("#endUserPopup").modal();
@@ -413,14 +416,14 @@
         $scope.initSubscriptionDetail = function () {
             companyData.updateSubscriptionDetail().then(function (resp) {
                 var response = resp.data;
-                if (response == "True") {
+                if (response.isValid == true) {
                     $scope.SubscriptionDetailModalTitle = "Subscriptions Status:  ";
                     $scope.SubscriptionDetailModalMessage = "Your Subscriptions List has been succesfully updated from StreamOne"
                     $scope.initSubscriptionSuccess = true;
                 }
                 else {
                     $scope.SubscriptionDetailModalTitle = "Subscriptions Status:  ";
-                    $scope.SubscriptionDetailModalMessage = "Subscriptions List updation has been failed, Please contact your administrator."
+                    $scope.SubscriptionDetailModalMessage = response.message;
                     $scope.initSubscriptionSuccess = true;
                 }
             })
@@ -429,6 +432,7 @@
                 });
         };
         $scope.initMapping = function () {
+            $scope.subsCompanyId = $scope.model.filter.companyId;
             angular.forEach($scope.model.subscriptionList, function (item) {
                 item.mapping = false;
             });
@@ -448,25 +452,47 @@
             },
 
             $scope.showSaveMarkupModal = function () {
-                $scope.saveCompanyLevelMarkUpMessage = "Are you sure you want to perform this update?";
+                $scope.saveMarkUpType = 1;
                 $("#saveCompanyLevelMarkUp").modal();
             }
-        $scope.saveMarkup = function (markup, company) {
-            markup.company = company;
-
-            companyData.saveMarkup(markup).then(function (resp) {
-                if (resp) {
-                    $scope.CompanyLevelMarkUpSuccessMessage = "Changes updated Successfully"
-                }
-                else {
-                    $scope.CompanyLevelMarkUpSuccessMessage = "Changes updation failed"
-                }
-                $("#CompanyLevelMarkUpSuccess").modal();
-                $scope.getPaginatedSubscriptions();
-                $scope.selectedSubscriptionForMarkUp = {};
-            })
-                .catch(function () {
-                });
+        $scope.showRemoveMarkupModal = function () {
+            $scope.saveMarkUpType = 0;
+            $("#saveCompanyLevelMarkUp").modal();
+        }
+        $scope.saveMarkup = function (markup, company, saveMarkUpType) {
+            if (saveMarkUpType == 1) {
+                markup.company = company;
+                companyData.saveMarkup(markup).then(function (resp) {
+                    if (resp) {
+                        $scope.CompanyLevelMarkUpSuccessMessage = "Changes updated Successfully"
+                    }
+                    else {
+                        $scope.CompanyLevelMarkUpSuccessMessage = "Changes updation failed"
+                    }
+                    $("#CompanyLevelMarkUpSuccess").modal();
+                    $scope.getPaginatedSubscriptions();
+                    $scope.selectedSubscriptionForMarkUp = {};
+                })
+                    .catch(function () {
+                    });
+            }
+            if (saveMarkUpType == 0) {
+                if (markup == null) { markup = $scope.removeMarkupModel; }
+                markup.company = company;
+                companyData.removeMarkup(markup).then(function (resp) {
+                    if (resp) {
+                        $scope.CompanyLevelMarkUpSuccessMessage = "Changes updated Successfully"
+                    }
+                    else {
+                        $scope.CompanyLevelMarkUpSuccessMessage = "Changes updation failed"
+                    }
+                    $("#CompanyLevelMarkUpSuccess").modal();
+                    $scope.getPaginatedSubscriptions();
+                    $scope.selectedSubscriptionForMarkUp = {};
+                })
+                    .catch(function () {
+                    });
+            }
         }
 
         $scope.checkCompanyTable = function () {
@@ -509,7 +535,8 @@
             //$scope.initSubscriptionSuccess = true;
         }
         $scope.synchronizeSeatLimit = function (subscriptions) {
-            if (subscriptions.seatLimit == undefined) {
+            if ((subscriptions.seatLimit == null && (isNaN(parseFloat(subscriptions.markUpPercentage)) || subscriptions.taxStatus == null)) ||
+                (subscriptions.seatLimit != null && ((isNaN(parseFloat(subscriptions.markUpPercentage)) && subscriptions.taxStatus != null) || (!isNaN(parseFloat(subscriptions.markUpPercentage)) && subscriptions.taxStatus == null)))) {
                 $scope.showEdit = true;
             }
             else {
@@ -517,13 +544,6 @@
             }
         }
         $scope.synchronizeMarkUp = function (dynamic, subscriptions, flag) {
-            if (subscriptions.markUpPercentage == undefined || subscriptions.salesPrice == undefined) {
-                $scope.showEdit = true;
-            }
-            else {
-                $scope.showEdit = false;
-            }
-
             var currentObj;
             // var currentObj = $scope.model.subscriptionList.find(i => i.subscriptionId == subscriptions.subscriptionId);
             angular.forEach($scope.model.subscriptionList, function (subscription, index) {
@@ -556,6 +576,13 @@
                         subscription.markUpPercentage = markUp;
                     }
                 });
+            }
+            if ((subscriptions.seatLimit == null && (isNaN(parseFloat(subscriptions.markUpPercentage)) || subscriptions.taxStatus == null)) ||
+                (subscriptions.seatLimit != null && ((isNaN(parseFloat(subscriptions.markUpPercentage)) && subscriptions.taxStatus != null) || (!isNaN(parseFloat(subscriptions.markUpPercentage)) && subscriptions.taxStatus == null)))) {
+                $scope.showEdit = true;
+            }
+            else {
+                $scope.showEdit = false;
             }
         }
     }

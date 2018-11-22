@@ -26,18 +26,57 @@ if exists(select * from information_schema.tables where table_schema = N'dbo' an
 			IF NOT EXISTS(SELECT 1 FROM sys.columns  WHERE Name = N'TemporarySeatLimit' AND Object_ID = Object_ID(N'dbo.subscriptionsummarydetail'))
 			alter table subscriptionsummarydetail add TemporarySeatLimit [float] NULL
 			
-			IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS  WHERE TABLE_NAME = 'SubscriptionSummaryDetail' and CONSTRAINT_NAME = 'PK_SubscriptionSummaryDetail')
+			--Start Table SubscriptionSummaryDetail
+			IF EXISTS(SELECT 1  FROM sys.key_constraints WHERE name = (N'PK_SubscriptionSummaryDetail') AND parent_object_id = OBJECT_ID(N'dbo.SubscriptionSummaryDetail'))
 			ALTER TABLE [dbo].[SubscriptionSummaryDetail] DROP CONSTRAINT [PK_SubscriptionSummaryDetail] WITH ( ONLINE = OFF )
 			
 			IF NOT EXISTS(SELECT 1 FROM sys.columns  WHERE Name = N'tblSubsId' AND Object_ID = Object_ID(N'dbo.subscriptionsummarydetail'))
 			ALTER TABLE [dbo].[SubscriptionSummaryDetail] ADD [tblSubsId]  int NOT NULL identity(1,1) 
 
-			/****** Object:  Index [PK_SubscriptionSummaryDetail]    Script Date: 10/18/2018 3:53:22 PM ******/
-			IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS  WHERE TABLE_NAME = 'SubscriptionSummaryDetail' and CONSTRAINT_NAME = 'PK_SubscriptionSummaryDetail')
-			ALTER TABLE [dbo].[SubscriptionSummaryDetail] ADD  CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED 
-			(
-				[tblSubsId] ASC
-			)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF) ON [PRIMARY]
+			IF NOT EXISTS(SELECT 1  FROM sys.key_constraints WHERE name = (N'PK_SubscriptionSummaryDetail') AND parent_object_id = OBJECT_ID(N'dbo.SubscriptionSummaryDetail'))
+			ALTER TABLE [dbo].[SubscriptionSummaryDetail] ADD  CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED ([tblSubsId]);
+			--END Table SubscriptionSummaryDetail
+
+			IF  EXISTS (SELECT 1  FROM sys.foreign_keys WHERE name = (N'FK_CompanyOrder_Company') AND parent_object_id = OBJECT_ID(N'dbo.CompanyOrder'))
+			ALTER TABLE [dbo].[CompanyOrder] DROP CONSTRAINT [FK_CompanyOrder_Company]
+
+			IF  EXISTS (SELECT 1  FROM sys.foreign_keys WHERE name = (N'FK_CompanyOrder_OrderHeader') AND parent_object_id = OBJECT_ID(N'dbo.CompanyOrder'))
+			ALTER TABLE [dbo].[CompanyOrder] DROP CONSTRAINT [FK_CompanyOrder_OrderHeader]
+
+			IF  EXISTS (SELECT 1  FROM sys.foreign_keys WHERE name = (N'FK_Enduser_Company') AND parent_object_id = OBJECT_ID(N'dbo.Enduser'))
+			ALTER TABLE [dbo].[Enduser] DROP CONSTRAINT [FK_Enduser_Company]
+
+			IF  EXISTS (SELECT 1  FROM sys.foreign_keys WHERE name = (N'FK_OrderLine_OrderHeader') AND parent_object_id = OBJECT_ID(N'dbo.OrderLine'))
+			ALTER TABLE [dbo].[OrderLine] DROP CONSTRAINT [FK_OrderLine_OrderHeader]
+
+			--Start Table OrderHeader
+			IF EXISTS(SELECT 1  FROM sys.key_constraints WHERE parent_object_id = OBJECT_ID(N'dbo.OrderHeader') and type='PK')
+			BEGIN
+				DECLARE @SQL VARCHAR(4000)
+				SET @SQL = 'ALTER TABLE dbo.OrderHeader DROP CONSTRAINT |ConstraintName| '
+				SET @SQL = REPLACE(@SQL, '|ConstraintName|', ( SELECT   name
+                                               FROM     sys.key_constraints
+                                               WHERE    type = 'PK'
+                                                        AND parent_object_id = OBJECT_ID(N'dbo.OrderHeader')
+                                             ))
+
+				EXEC (@SQL)
+			END
+			
+			IF NOT EXISTS(SELECT 1 FROM sys.columns  WHERE Name = N'OrderId' AND Object_ID = Object_ID(N'dbo.OrderHeader'))
+			ALTER TABLE [dbo].[OrderHeader] ADD [OrderId]  int NOT NULL identity(1,1) 
+
+			IF NOT EXISTS(SELECT 1  FROM sys.key_constraints WHERE name = (N'PK_OrderHeader') AND parent_object_id = OBJECT_ID(N'dbo.OrderHeader'))
+			ALTER TABLE [dbo].[OrderHeader] ADD  CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED ([OrderId]);
+			--End Table OrderHeader
+
+			--Start Table OrderLine
+			IF EXISTS(SELECT 1  FROM sys.key_constraints WHERE name = (N'PK_OrderLine') AND parent_object_id = OBJECT_ID(N'dbo.OrderLine'))
+			ALTER TABLE [dbo].[OrderLine] DROP CONSTRAINT [PK_OrderLine] WITH ( ONLINE = OFF )
+
+			IF NOT EXISTS(SELECT 1  FROM sys.key_constraints WHERE name = (N'PK_OrderLine') AND parent_object_id = OBJECT_ID(N'dbo.OrderLine'))
+			ALTER TABLE [dbo].[OrderLine] ADD  CONSTRAINT [PK_OrderLine] PRIMARY KEY CLUSTERED ([LineId]);
+			--END Table OrderLine
 	end
 
 else
@@ -51,7 +90,7 @@ else
 			[VendorId] [nvarchar](50) NULL,
 			[VendorName] [nvarchar](50) NULL,
 			[SKU] [nvarchar](50) NULL,
-			[SkuName] [nvarchar](50) NULL,
+			[SkuName] [nvarchar](max) NULL,
 			[Quantity] [nvarchar](50) NULL,
 			[Article] [nvarchar](50) NULL,
 			[PaymentMethod] [nvarchar](50) NULL,
@@ -80,11 +119,11 @@ else
 			[SeatCounter] [int] NULL,
 			[TemporarySeatLimit] [float] NULL,
 			[tblSubsId] [int] IDENTITY(1,1) NOT NULL,
-			CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED 
-			(
-				[tblSubsId] ASC
-			)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
-			) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+		 CONSTRAINT [PK_SubscriptionSummaryDetail] PRIMARY KEY CLUSTERED 
+		(
+			[tblSubsId] ASC
+		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+		) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 	end
 
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'__MigrationHistory')
@@ -239,24 +278,24 @@ if not exists(select * from information_schema.tables where table_schema = N'dbo
 	end	
 
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'CompanyOrder')	
-	begin
-	/****** Object:  Table [dbo].[CompanyOrder]    Script Date: 6/12/2018 11:32:59 AM ******/
-	SET ANSI_NULLS ON
-	
-	SET QUOTED_IDENTIFIER ON
-	
-	CREATE TABLE [dbo].[CompanyOrder](
-		[RecordId] [numeric](18, 0) IDENTITY(1,1) NOT NULL,
-		[CompanyId] [numeric](18, 0) NOT NULL,
-		[SalesOrderId] [nvarchar](50) NOT NULL,
-		[Created] [datetime] NULL,
-		[CreatedBy] [nvarchar](100) NULL,
-	CONSTRAINT [PK_CompanyOrder] PRIMARY KEY CLUSTERED 
-	(
-		[RecordId] ASC
-	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-	) ON [PRIMARY]
-	end
+	BEGIN
+		/****** Object:  Table [dbo].[CompanyOrder]    Script Date: 11/6/2018 1:42:00 PM ******/
+		SET ANSI_NULLS ON
+		
+		SET QUOTED_IDENTIFIER ON
+		
+		CREATE TABLE [dbo].[CompanyOrder](
+			[RecordId] [numeric](18, 0) IDENTITY(1,1) NOT NULL,
+			[CompanyId] [numeric](18, 0) NOT NULL,
+			[SalesOrderId] [nvarchar](50) NOT NULL,
+			[Created] [datetime] NULL,
+			[CreatedBy] [nvarchar](100) NULL,
+		 CONSTRAINT [PK_CompanyOrder] PRIMARY KEY CLUSTERED 
+		(
+			[RecordId] ASC
+		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+		) ON [PRIMARY]
+	END
 	
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'Configs')	
 	begin
@@ -278,26 +317,26 @@ if not exists(select * from information_schema.tables where table_schema = N'dbo
 	end	
 	
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'Enduser')		
-	begin
-	/****** Object:  Table [dbo].[Enduser]    Script Date: 6/12/2018 11:32:59 AM ******/
-	SET ANSI_NULLS ON
-	
-	SET QUOTED_IDENTIFIER ON
-	
-	CREATE TABLE [dbo].[Enduser](
-		[EnduserId] [numeric](18, 0) IDENTITY(1,1) NOT NULL,
-		[SAPEnduserId] [uniqueidentifier] NULL,
-		[CompanyId] [numeric](18, 0) NULL,
-		[Created] [datetime] NULL,
-		[CreatedBy] [nvarchar](255) NULL,
-		[Email] [nvarchar](255) NOT NULL,
-		[Name] [nvarchar](255) NOT NULL,
-	CONSTRAINT [PK_Enduser] PRIMARY KEY CLUSTERED 
-	(
-		[EnduserId] ASC
-	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-	) ON [PRIMARY]
-	end
+	BEGIN
+		/****** Object:  Table [dbo].[Enduser]    Script Date: 11/6/2018 1:45:49 PM ******/
+		SET ANSI_NULLS ON
+		
+		SET QUOTED_IDENTIFIER ON
+		
+		CREATE TABLE [dbo].[Enduser](
+			[EnduserId] [numeric](18, 0) IDENTITY(1,1) NOT NULL,
+			[SAPEnduserId] [uniqueidentifier] NULL,
+			[CompanyId] [numeric](18, 0) NULL,
+			[Created] [datetime] NULL,
+			[CreatedBy] [nvarchar](255) NULL,
+			[Email] [nvarchar](255) NOT NULL,
+			[Name] [nvarchar](255) NOT NULL,
+		 CONSTRAINT [PK_Enduser] PRIMARY KEY CLUSTERED 
+		(
+			[EnduserId] ASC
+		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+		) ON [PRIMARY]
+	END
 	
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'Logs')		
 	begin
@@ -344,40 +383,40 @@ if not exists(select * from information_schema.tables where table_schema = N'dbo
 		[LastUpdated] [datetime] NULL,
 		[OrderJson] [nvarchar](max) NULL,
 		[PONumber] [nvarchar](50) NULL,
-	PRIMARY KEY CLUSTERED 
+		[OrderId] [int] IDENTITY(1,1) NOT NULL,
+	 CONSTRAINT [PK_OrderHeader] PRIMARY KEY CLUSTERED 
 	(
-		[OrderNumber] ASC
+		[OrderId] ASC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-	
+
 	end	
 	
 	
 	
 if not exists(select * from information_schema.tables where table_schema = N'dbo' and table_name = N'OrderLine')	
 	begin
-	/****** Object:  Table [dbo].[OrderLine]    Script Date: 6/12/2018 11:32:59 AM ******/
-	SET ANSI_NULLS ON
-	
-	SET QUOTED_IDENTIFIER ON
-	
-	CREATE TABLE [dbo].[OrderLine](
-		[LineId] [numeric](18, 0) IDENTITY(1,1) NOT NULL,
-		[OrderNumber] [nvarchar](50) NOT NULL,
-		[Sku] [nvarchar](50) NOT NULL,
-		[SkuName] [nvarchar](200) NULL,
-		[ManufacturerPartNumber] [nvarchar](50) NULL,
-		[UnitPrice] [numeric](18, 0) NULL,
-		[Quantity] [nvarchar](50) NULL,
-		[LineStatus] [nvarchar](50) NULL,
-		[CurrencySymbol] [nvarchar](10) NULL,
-		[CurrencyCode] [nvarchar](10) NULL,
-	CONSTRAINT [PK_OrderLine] PRIMARY KEY CLUSTERED 
-	(
-		[OrderNumber] ASC,
-		[Sku] ASC
-	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-	) ON [PRIMARY]
+		/****** Object:  Table [dbo].[OrderLine]    Script Date: 11/6/2018 1:44:36 PM ******/
+		SET ANSI_NULLS ON
+		
+		SET QUOTED_IDENTIFIER ON
+		
+		CREATE TABLE [dbo].[OrderLine](
+			[LineId] [numeric](18, 0) IDENTITY(1,1) NOT NULL,
+			[OrderNumber] [nvarchar](50) NOT NULL,
+			[Sku] [nvarchar](50) NOT NULL,
+			[SkuName] [nvarchar](200) NULL,
+			[ManufacturerPartNumber] [nvarchar](50) NULL,
+			[UnitPrice] [numeric](18, 0) NULL,
+			[Quantity] [nvarchar](50) NULL,
+			[LineStatus] [nvarchar](50) NULL,
+			[CurrencySymbol] [nvarchar](10) NULL,
+			[CurrencyCode] [nvarchar](10) NULL,
+		 CONSTRAINT [PK_OrderLine] PRIMARY KEY CLUSTERED 
+		(
+			[LineId] ASC
+		)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+		) ON [PRIMARY]
 	end
 	
 	
@@ -537,54 +576,7 @@ end
 			REFERENCES [dbo].[AspNetUsers] ([Id])
 			ON DELETE CASCADE
 			
-			ALTER TABLE [dbo].[AspNetUserRoles] CHECK CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId]
-
-
-
-IF  EXISTS (SELECT *  FROM sys.foreign_keys WHERE name = (N'FK_CompanyOrder_Company') AND parent_object_id = OBJECT_ID(N'dbo.CompanyOrder'))
-BEGIN
-			ALTER TABLE dbo.CompanyOrder DROP CONSTRAINT [FK_CompanyOrder_Company]
-end
-
-			ALTER TABLE [dbo].[CompanyOrder]  WITH CHECK ADD  CONSTRAINT [FK_CompanyOrder_Company] FOREIGN KEY([CompanyId])
-			REFERENCES [dbo].[Company] ([CompanyId])
-			
-			ALTER TABLE [dbo].[CompanyOrder] CHECK CONSTRAINT [FK_CompanyOrder_Company]
-
-
-
-IF  EXISTS (SELECT *  FROM sys.foreign_keys WHERE name = (N'FK_CompanyOrder_OrderHeader') AND parent_object_id = OBJECT_ID(N'dbo.CompanyOrder'))
-BEGIN
-			ALTER TABLE dbo.CompanyOrder DROP CONSTRAINT [FK_CompanyOrder_OrderHeader]
-end
-
-			ALTER TABLE [dbo].[CompanyOrder]  WITH CHECK ADD  CONSTRAINT [FK_CompanyOrder_OrderHeader] FOREIGN KEY([SalesOrderId])
-			REFERENCES [dbo].[OrderHeader] ([OrderNumber])
-			
-			ALTER TABLE [dbo].[CompanyOrder] CHECK CONSTRAINT [FK_CompanyOrder_OrderHeader]
-
-
-IF  EXISTS (SELECT *  FROM sys.foreign_keys WHERE name = (N'FK_Enduser_Company') AND parent_object_id = OBJECT_ID(N'dbo.Enduser'))
-BEGIN
-			ALTER TABLE dbo.Enduser DROP CONSTRAINT [FK_Enduser_Company]
-end
-
-			ALTER TABLE [dbo].[Enduser]  WITH CHECK ADD  CONSTRAINT [FK_Enduser_Company] FOREIGN KEY([CompanyId])
-			REFERENCES [dbo].[Company] ([CompanyId])
-			
-			ALTER TABLE [dbo].[Enduser] CHECK CONSTRAINT [FK_Enduser_Company]
-
-
-IF  EXISTS (SELECT *  FROM sys.foreign_keys WHERE name = (N'FK_OrderLine_OrderHeader') AND parent_object_id = OBJECT_ID(N'dbo.OrderLine'))
-BEGIN
-			ALTER TABLE dbo.OrderLine DROP CONSTRAINT [FK_OrderLine_OrderHeader]
-end
-
-			ALTER TABLE [dbo].[OrderLine]  WITH CHECK ADD  CONSTRAINT [FK_OrderLine_OrderHeader] FOREIGN KEY([OrderNumber])
-			REFERENCES [dbo].[OrderHeader] ([OrderNumber])
-			
-			ALTER TABLE [dbo].[OrderLine] CHECK CONSTRAINT [FK_OrderLine_OrderHeader]
-	
+			ALTER TABLE [dbo].[AspNetUserRoles] CHECK CONSTRAINT [FK_dbo.AspNetUserRoles_dbo.AspNetUsers_UserId]	
 	
 
 /****** Object:  StoredProcedure [dbo].[procGetCompanySalesOrders]    Script Date: 6/12/2018 11:32:59 AM ******/
@@ -1112,39 +1104,27 @@ IF OBJECT_ID('procXmlInsertCompanies') IS not NULL
 /****** Object:  StoredProcedure [dbo].[procXmlInsertCompanies]    Script Date: 7/27/2018 2:42:39 PM ******/
 DROP PROCEDURE [dbo].[procXmlInsertCompanies]
 GO
-
-/****** Object:  StoredProcedure [dbo].[procXmlInsertCompanies]    Script Date: 7/27/2018 2:42:39 PM ******/
+/****** Object:  StoredProcedure [dbo].[procXmlInsertCompanies]    Script Date: 11/6/2018 12:21:55 PM ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
+CREATE PROCEDURE [dbo].[procXmlInsertCompanies]  
+(  
+ @Companies xml ,  
+ @CreatedBy nvarchar(100)  
+)  
+AS  
+BEGIN  
 
+	TRUNCATE TABLE Company
 
+    INSERT INTO Company(Name,Created,CreatedBy)  
+    Select c.value('.','nvarchar(100)'),GETDATE(),@CreatedBy        
+    From   
+	@Companies.nodes('Companies/Company') T(c)
 
-
-Create procedure [dbo].[procXmlInsertCompanies]
-(
-	@Companies xml	,
-	@CreatedBy nvarchar(100)
-)
-as
-
-begin
-  
-
-    Insert Into Company(Name,Created,CreatedBy)
-    Select c.value('.','nvarchar(100)'),GETDATE(),@CreatedBy      
-    From 
-		 @Companies.nodes('Companies/Company') T(c) left join 
-		 Company Com On  c.value('.','nvarchar(100)') = Com.Name
-    Where Com.Name is null
-
-
-
-
-
-end
+END
 GO
 
 IF OBJECT_ID('procXmlRemoveEndUser') IS not NULL

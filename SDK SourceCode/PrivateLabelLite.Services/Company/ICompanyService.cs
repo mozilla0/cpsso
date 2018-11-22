@@ -26,6 +26,7 @@ namespace PrivateLabelLite.Services.Company
         Response SaveMapping(List<SubscriptionDetail> unMapped, List<SubscriptionDetail> mapped);
         bool UpdateSubscriptionDetail(List<Dictionary<Guid, SubscriptionDetail>> subscriptions);
         bool SaveMarkup(SubscriptionDetail markup);
+        bool RemoveMarkup(SubscriptionDetail markup);
         bool CheckCompanyTable();
         void addflag();
     }

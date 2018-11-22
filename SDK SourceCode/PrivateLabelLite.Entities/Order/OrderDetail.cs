@@ -15,11 +15,15 @@ namespace PrivateLabelLite.Entities.Order
     {
         public OrderDetail OrderInfo { get; set; }
     }
+    public class OrdersDetailsResult
+    {
+        public List<OrderDetailResult> OrdersInfoResult { get; set; }
+    }
     public class OrderDetail
     {
         public DateTime OrderDate { get; set; }
         public string OrderNumber { get; set; }
-        public string PONumber { get; set; }
+        public string ResellerPoNumber { get; set; }
         public string PaymentMethod { get; set; }
         public string Status { get; set; }
         public string EndUserName { get; set; }
