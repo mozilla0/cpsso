@@ -1,45 +1,46 @@
 
 <p><strong><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/GithubBanner.JPG" alt="Customer Portal SDK - StreamOne" width="990" height="380" /></strong></p>
-<p><strong>What is &ldquo;Customer Portal SDK &ndash; StreamOne&rdquo;?</strong><br />Customer Portal Software Development Kit (SDK) &ndash; StreamOne, is a subscription management web application that allows both customers and end users to update their Microsoft CSP subscriptions.<br /><br />There are two user levels:<br />&bull; The end user portal allows them to modify seat quantity and view log history<br />&bull; The customer portal allows you to manage users, modify seat quantity and view log history</p>
+<p><strong>What is &ldquo;Customer Portal SDK &ndash; StreamOne&rdquo;?</strong><br />Customer Portal Software Development Kit (SDK) &ndash; StreamOne, is a subscription management web application that allows
+both customers and end users to update their Microsoft CSP subscriptions.<br /><br />There are two user levels:<br />&bull; The customer portal allows you to manage users, modify seat quantity and view log history, see cost prices, setup sales
+margins and seat increase limits<br />&bull; The end user portal allows them to modify seat quantity and view log history, also see pre-defined sales price</p>
 <p><img src="https://raw.githubusercontent.com/techdata-cloudautomation/cpsso/master/Marketing/2.JPG" alt="" width="990" height="283" /></p>
-<p><strong>What are the key benefits?</strong><br />Firstly, it is very easy to use and there is no need to log into StreamOne. In StreamOne only administrators are able to manage users and modify seats. In Customer Portal SDK &ndash; StreamOne any approved users from your organization<br />can manage users and modify seats, 24/7 on any device. Most importantly, your customers can also be given access to the app to modify seat quantity so you no longer need to be involved in the process, saving you time and money. Lastly changes are effective in seconds at the click of a button within the app. With the web app you can manage multiple user access and also view the history of any<br />license changes.</p>
-<p><strong>How does it work?</strong><br />The app is integrated to StreamOne Cloud Marketplace via an API. You and your customers log in from a browser using active directory credentials. Once you login for the first time it will collate all your end user details and their CSP subscriptions and display them together on one screen. The Customer Portal SDK &ndash; Streamone is currently available as a Software Development Kit (SDK). Using Github Repository and Azure Resource Management (ARM) you can easily deploy it into your account. This application leverages the power of Azure for you to self-host it and easily maintain it after deployment.</p>
+<p><strong>What are the key benefits?</strong><br />Firstly, it is very easy to use and there is no need to log into StreamOne. In StreamOne only administrators are able to manage users and modify seats. In Customer Portal SDK – StreamOne any approved users from your organisation can manage users and modify seats 24/7 on any device. Most importantly, your customers can also be given access to the
+app to modify seat quantity so you no longer need to be involved in the process, saving you time and money. Lastly changes are effective in seconds at the click of a button within the app. With the web app you can manage multiple user access and also view the history of any license changes.<br/></p>
+<p><strong>How does it work?</strong><br />The app is integrated to StreamOne Cloud Marketplace via an API. You and your customers log in from a browser using active directory credentials. Once you login for the first time it will collate all your end user details and their CSP subscriptions and display them together on one screen. The Customer Portal SDK – Streamone is currently available as a Software Development Kit (SDK). Using Github Repository and the power of Azure Resource Management (ARM) you can easily deploy it into your account. This application leverages the power of Azure for you to self-host it and easily maintain it after deployment.</p>
 <p><strong>When will it be available?</strong><br />Customer Portal SDK &ndash; StreamOne is available now.</p>
 <p><strong>Who will it be available to?</strong><br />It is available to all customers that have basic Azure knowledge and an Azure account.</p>
 <p><strong>What does Customer Portal SDK - StreamOne look like?</strong><br />It looks great! It has a very simple and modern looking Graphical User Interface (GUI).</p>
 <p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/9_Customer%20Portal%20SDK%20View.JPG?raw=true" alt="" width="770" height="410" /></p>
-<p><strong>What are the customer pre-requisites?</strong><br />&bull; Reseller agreement<br />&bull; Partner API credentials<br />&bull; Azure account<br />&bull; Microsoft account for login<br />&bull; Partner resources to maintain it on Azure (estimate monthly cost ~USD50.00)</p>
+<p><strong>What are the customer pre-requisites?</strong><br />&bull; Reseller agreement<br />&bull; Partner API credentials<br />&bull; Azure account<br />&bull; Microsoft account for login<br />&bull; Partner resources to maintain it on Azure <br />&bull; Eestimate monthly cost ~USD18.00 <br /> App Service, Tier Shared, D1, 1 GM RAM, 1 GB  Storage<br /> Azure SQL DB Single Database, Basic Tier. 5 DTUs, 2, 2 GM </p>
 <p><strong>How to get onboarded?</strong><br />Contact SCM Customer Integrations Team according of your region:</p>
 <p><strong>EUROPE</strong><br /><a href="mailto:EU.TDCloud@Techdata.com">EU.TDCloud@Techdata.com</a><br /><strong>US</strong><br /><a href="mailto:PartnerApi@Techdata.com">PartnerApi@Techdata.com</a><br /><strong>CANADA</strong><br /><a href="mailto:StreamOne@Techdata.ca">StreamOne@Techdata.ca</a></p>
-<p><strong>Summary - Deployment using Github and Powershell Script</strong><br />We have accomplished the automation of 90% of the deployment of this SDK application. Tech Data Business Partners with the most Azue knowledge will be able to self-deploy the app. The first step and last step are manual and the average time for the whole process is around 4 minutes;</p>
-<ol>
-<li>Manual - Application creation</li>
-<li>Auto - Deployment</li>
-<li>Manual - Update app site name selected during deployment</li>
-</ol>
-<p><strong>Auto Deployment Information</strong><br />The project utilizes GitHub public repository to host the application, as well as Powershell Deployment Script.&nbsp;It includes the "Download Installation Script" button that allows you to launch the installation. It also contains files that perform the post-deployment actions that&nbsp; customize the database. The deployment includes the Azure templates, database scripts, the deployment code for the application, and support material. Azure copies all of the files from Github to the web app during the deployment process. For further details on how to deploy the application please read the file AutoDeploy. Customer Portal SDK StreamOne.</p>
-<p><strong>IMPORTANT</strong><br />Before you proceed make sure you have read the Auto Deployment document and make sure you have all the necessary information for the input fields in the installation form:</p>
+<p><strong>Summary - Deployment using Github and Powershell Script</strong><br />We have accomplished the automation of 100% of the deployment of this SDK application. Tech Data Business Partners with basic Azue knowledge will be able to self-deploy the App. The first step is to dowload the Deployment Script at the botton of the page and use power shell to deploy the application. The process will take around 17 minutes;</p>
+<p><strong>Auto Deployment Information</strong><br />For further details on how to deploy the application please read the file AutoDeploy. Customer Portal SDK StreamOne.</p>
+<p><strong>IMPORTANT</strong><br />Before you proceed make sure you have read the Auto Deployment document and make sure you have all the necessary information for the input fields in the powershell instalation.</p>
 <!--<p><img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/8.jpg?raw=true" alt="" width="645" height="772" /></p>-->
-<ul>
-<li><strong>Directory</strong>&nbsp;&ndash; This defaults to the Microsoft Azure Directory tied to the login account. If this isn&rsquo;t the correct directory, close all browser windows and start over at step #1.&nbsp;</li>
-<li><strong>Subscription&nbsp;</strong>&ndash; This defaults to an Azure subscription tied to the login account. If needed, click the dropdown and select the desired subscription.</li>
-<li><strong>Resource Group&nbsp;</strong>&ndash; This defaults to the&nbsp;<em>Create New</em>&nbsp;option to create a new resource group, which is recommended.</li>
-<li><strong>Resource Group Name</strong>&nbsp;&ndash; If creating a new group, the page randomly generates a name (e.g., cpsso9fc2). Accept this value or change it to a custom value.&nbsp;</li>
-<li><strong>Site Name</strong>&nbsp;&ndash; This will be the name for the instance of the&nbsp;<em>Customer Portal SDK StreamOne.</em>&nbsp;Accept the randomly generated name (e.g., cpsso9fc2), or enter a custom value. The name must be lowercase with no special characters and no spaces. Ensure whatever name entered is valid,&nbsp;<em>Name is available</em>&nbsp;will appear next to it if so.</li>
-<li><strong>Site Location&nbsp;</strong>&ndash; Select a commercial Azure region to deploy the instance.</li>
-<li><strong>SQL Password&nbsp;</strong>&ndash; Enter a password for the SQL Server and database deployed during the installation.</li>
-<li><strong>Application Id&nbsp;</strong>&ndash; Copy/paste the application ID generated during the&nbsp;<em>Pre-Deployment Task</em></li>
-<li><strong>Application Passcode&nbsp;</strong>&ndash; Copy/paste the application password generated during the&nbsp;<em>Pre-Deployment Task</em></li>
-<li><strong>Allowed Resellers&nbsp;</strong>&ndash; Enter a comma-delimited list of allowed reseller email addresses that can use the&nbsp;<em>Customer Portal SDK StreamOne</em></li>
-<li><strong>Client ID</strong>&nbsp;&ndash; Enter the partner API reseller client ID.</li>
-<li><strong>Client Secret</strong>&nbsp;&ndash; Enter the partner API reseller secret.</li>
-<li><strong>Reseller ID</strong>&nbsp;&ndash; Enter the StreamOne reseller ID.</li>
-<li><strong>SOIN</strong>&nbsp;&ndash; Enter the partner API reseller SOIN value.</li>
-<li><strong>Reseller Name</strong>&nbsp;&ndash; Enter the StreamOne reseller name.</li>
-<li><strong>Notification Emails</strong>&nbsp;&ndash; Enter an email address that will receive notifications from the&nbsp;<em>Customer Portal SDK StreamOne&nbsp;</em>when end customers submit orders.</li>
-<li><strong>Notification Email From</strong>&nbsp;&ndash; This is the sender address from which the application will send notifications.</li>
-<li><strong>Notification Email Password</strong>&nbsp;&ndash; This is the password of the email account that will send the notifications.</li>
-</ul>
+<p><strong>Step by Step for Deployment</strong></p>
+<p>1. Downloaded the Script</p>
+<p>2. Visit <u><a href="https://shell.azure.com/">https://shell.azure.com/</a></u></p>
+<p>3. Upload File</p>
+<p>4. Type in: cd $home</p>
+<p>6. Type in: ./cpssodeploy.ps1</p>
+<p>7. Authenticate with password</p>
+<p>8. Place the Setting as you are requested:</p>
+<p><strong>SETTINGS</strong></p>
+<p><strong>Resource Group Name:</strong>&nbsp;</p>
+<p><strong>Site </strong><strong>Name:</strong>&nbsp;<em>your App URL.</em> C<em>hoose the subdomain of your choise that will come before&nbsp;(.azurewebsites.net)</em></p>
+<p><strong>Location: </strong><em>ex: West Europe, East US, Central Canada, etc</em></p>
+<p><strong>SQL </strong><strong>password:</strong>&nbsp; c<em>reate one as you please</em></p>
+<p><strong>Allowed Resellers:</strong>&nbsp;e-mail to get initial access to the Application. E<em>-mail from the one installing the App</em></p>
+<p><strong>Client ID:</strong> <em>Provided by Customer Integrations Team</em></p>
+<p><strong>Client </strong><strong>secret</strong>: <em>Provided by Customer Integrations Team</em></p>
+<p><strong>Reseller </strong><strong>ID:</strong> <em>Provided by Customer Integrations Team</em></p>
+<p><strong>SOIN: </strong><em>Provided by Customer Integrations Team</em></p>
+<p><strong>Reseller </strong><strong>name: </strong><em>your company name</em></p>
+<p><strong>Reseller </strong><strong>region:&nbsp;</strong><em>ex: EUROPE, US or CANADA. Capital letters only..</em></p>
+<p><strong>Notification </strong><strong>emails: </strong><em>e-mail to receive seat change notifications</em></p>
+<p><strong>Notification email from:&nbsp;</strong><em>e-mail to trigger notifications</em></p>
+<p><strong>Notification email password:&nbsp;</strong><em>password of above e-mail</em></p>
 <p>&nbsp;<img src="https://github.com/techdata-cloudautomation/cpsso/blob/master/Marketing/5.jpg?raw=true" alt="" width="500" height="333" /></p>
 <p>&nbsp;<strong>Support Documents</strong></p>
 <p>Support Documents are to be found in the root of the application</p>
