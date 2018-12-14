@@ -28,7 +28,7 @@ app to modify seat quantity so you no longer need to be involved in the process,
 <p>8. Place the Setting as you are requested:</p>
 <p><strong>SETTINGS</strong></p>
 <p><strong>Resource Group Name:</strong>&nbsp;</p>
-<p><strong>Site </strong><strong>Name:</strong>&nbsp;<em>your App URL.</em> C<em>hoose the subdomain of your choise that will come before&nbsp;(.azurewebsites.net)</em></p>
+<p><strong>Site </strong><strong>Name:</strong>&nbsp;<em>your App URL.</em> C<em>hoose the subdomain of your choice that will come before&nbsp;(.azurewebsites.net)</em></p>
 <p><strong>Location: </strong><em>ex: West Europe, East US, Central Canada, etc</em></p>
 <p><strong>SQL </strong><strong>password:</strong>&nbsp; c<em>reate one as you please</em></p>
 <p><strong>Allowed Resellers:</strong>&nbsp;e-mail to get initial access to the Application. E<em>-mail from the one installing the App</em></p>
